@@ -70,6 +70,14 @@ void lv_tabview_rename_tab(lv_obj_t * obj, uint32_t idx, const char * new_name);
 void lv_tabview_set_active(lv_obj_t * obj, uint32_t idx, lv_anim_enable_t anim_en);
 
 /**
+ * Show a tab
+ * @param obj       pointer to a tabview widget
+ * @param idx       the index of the tab to show
+ * @param anim_en   LV_ANIM_ON/OFF
+ */
+void lv_tabview_set_tab_active(lv_obj_t * obj, uint32_t idx, lv_anim_enable_t anim_en);
+
+/**
  * Set the position of the tab bar
  * @param obj       pointer to a tabview widget
  * @param dir       LV_DIR_TOP/BOTTOM/LEFT/RIGHT
@@ -89,6 +97,13 @@ void lv_tabview_set_tab_bar_size(lv_obj_t * obj, int32_t size);
  * @return          the number of tabs
  */
 uint32_t lv_tabview_get_tab_count(lv_obj_t * obj);
+
+/**
+ * Get the current tab's index
+ * @param obj       pointer to a tabview widget
+ * @return          the zero based index of the current tab
+ */
+uint32_t lv_tabview_get_active(lv_obj_t * obj);
 
 /**
  * Get the current tab's index

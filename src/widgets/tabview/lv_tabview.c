@@ -150,6 +150,11 @@ void lv_tabview_set_active(lv_obj_t * obj, uint32_t idx, lv_anim_enable_t anim_e
     tabview->tab_cur = idx;
 }
 
+void lv_tabview_set_active(lv_obj_t * obj, uint32_t idx, lv_anim_enable_t anim_en)
+{
+    lv_tabview_set_tab_active(obj, idx, anim_en);
+}
+
 void lv_tabview_set_tab_bar_position(lv_obj_t * obj, lv_dir_t dir)
 {
     LV_ASSERT_OBJ(obj, MY_CLASS);
@@ -225,6 +230,13 @@ void lv_tabview_set_tab_bar_size(lv_obj_t * obj, int32_t size)
 }
 
 uint32_t lv_tabview_get_tab_active(lv_obj_t * obj)
+{
+    LV_ASSERT_OBJ(obj, MY_CLASS);
+    lv_tabview_t * tabview = (lv_tabview_t *)obj;
+    return tabview->tab_cur;
+}
+
+uint32_t lv_tabview_get_active(lv_obj_t * obj)
 {
     LV_ASSERT_OBJ(obj, MY_CLASS);
     lv_tabview_t * tabview = (lv_tabview_t *)obj;

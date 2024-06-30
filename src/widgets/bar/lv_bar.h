@@ -97,6 +97,22 @@ lv_obj_t * lv_bar_create(lv_obj_t * parent);
 void lv_bar_set_value(lv_obj_t * obj, int32_t value, lv_anim_enable_t anim);
 
 /**
+ * Set a minimum value on the bar
+ * @param obj           pointer to a bar object
+ * @param value         new minimum value
+ * @param anim          LV_ANIM_ON: set the value with an animation; LV_ANIM_OFF: change the value immediately
+ */
+void lv_bar_set_min_value(lv_obj_t * obj, int32_t value);
+
+/**
+ * Set a maximum value on the bar
+ * @param obj           pointer to a bar object
+ * @param value         new maximum value
+ * @param anim          LV_ANIM_ON: set the value with an animation; LV_ANIM_OFF: change the value immediately
+ */
+void lv_bar_set_max_value(lv_obj_t * obj, int32_t value);
+
+/**
  * Set a new start value on the bar
  * @param obj             pointer to a bar object
  * @param start_value     new start value

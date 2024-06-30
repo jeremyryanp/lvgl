@@ -173,6 +173,10 @@ lv_property_t lv_obj_get_style_property(lv_obj_t * obj, lv_prop_id_t id, uint32_
  */
 lv_prop_id_t lv_obj_property_get_id(const lv_obj_t * obj, const char * name);
 
+lv_property_t lv_prop_get_empty(lv_obj_t * obj);
+
+void lv_prop_set_empty(lv_obj_t * obj);
+
 /**********************
  *      MACROS
  **********************/

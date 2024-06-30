@@ -158,6 +158,16 @@ lv_prop_id_t lv_obj_property_get_id(const lv_obj_t * obj, const char * name)
     return LV_PROPERTY_ID_INVALID;
 }
 
+lv_property_t lv_prop_get_empty(lv_obj_t * obj)
+{
+    LV_LOG_WARN("empty property get called for obj %p", obj);
+}
+
+void lv_prop_set_empty(lv_obj_t * obj)
+{
+    LV_LOG_WARN("empty property set called for obj %p", obj);
+}
+
 /**********************
  *  STATIC FUNCTIONS
  **********************/

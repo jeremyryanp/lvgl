@@ -94,6 +94,20 @@ void lv_arc_set_start_angle(lv_obj_t * obj, lv_value_precise_t start);
 void lv_arc_set_end_angle(lv_obj_t * obj, lv_value_precise_t end);
 
 /**
+ * Set the start angle of an arc. 0 deg: right, 90 bottom, etc.
+ * @param obj       pointer to an arc object
+ * @param start     the start angle. (if `LV_USE_FLOAT` is enabled it can be fractional too.)
+ */
+void lv_arc_set_angle_start(lv_obj_t * obj, lv_value_precise_t start);
+
+/**
+ * Set the end angle of an arc. 0 deg: right, 90 bottom, etc.
+ * @param obj       pointer to an arc object
+ * @param end       the end angle  (if `LV_USE_FLOAT` is enabled it can be fractional too.)
+ */
+void lv_arc_set_angle_end(lv_obj_t * obj, lv_value_precise_t end);
+
+/**
  * Set the start and end angles
  * @param obj       pointer to an arc object
  * @param start     the start angle  (if `LV_USE_FLOAT` is enabled it can be fractional too.)
@@ -114,6 +128,20 @@ void lv_arc_set_bg_start_angle(lv_obj_t * obj, lv_value_precise_t start);
  * @param end       the end angle  (if `LV_USE_FLOAT` is enabled it can be fractional too.)
  */
 void lv_arc_set_bg_end_angle(lv_obj_t * obj, lv_value_precise_t end);
+
+/**
+ * Set the start angle of an arc background. 0 deg: right, 90 bottom, etc.
+ * @param obj       pointer to an arc object
+ * @param start     the start angle  (if `LV_USE_FLOAT` is enabled it can be fractional too.)
+ */
+void lv_arc_set_bg_angle_start(lv_obj_t * obj, lv_value_precise_t start);
+
+/**
+ * Set the start angle of an arc background. 0 deg: right, 90 bottom etc.
+ * @param obj       pointer to an arc object
+ * @param end       the end angle  (if `LV_USE_FLOAT` is enabled it can be fractional too.)
+ */
+void lv_arc_set_bg_angle_end(lv_obj_t * obj, lv_value_precise_t end);
 
 /**
  * Set the start and end angles of the arc background
@@ -143,6 +171,20 @@ void lv_arc_set_mode(lv_obj_t * obj, lv_arc_mode_t type);
  * @param value     new value
  */
 void lv_arc_set_value(lv_obj_t * obj, int32_t value);
+
+/**
+ * Set a new min value on the arc
+ * @param obj       pointer to an arc object
+ * @param value     new value
+ */
+void lv_arc_set_min_value(lv_obj_t * obj, int32_t value);
+
+/**
+ * Set a new max value on the arc
+ * @param obj       pointer to an arc object
+ * @param value     new value
+ */
+void lv_arc_set_max_value(lv_obj_t * obj, int32_t value);
 
 /**
  * Set minimum and the maximum values of an arc
@@ -185,6 +227,20 @@ lv_value_precise_t lv_arc_get_angle_start(lv_obj_t * obj);
 lv_value_precise_t lv_arc_get_angle_end(lv_obj_t * obj);
 
 /**
+ * Get the start angle of an arc.
+ * @param obj       pointer to an arc object
+ * @return          the start angle [0..360]  (if `LV_USE_FLOAT` is enabled it can be fractional too.)
+ */
+lv_value_precise_t lv_arc_get_start_angle(lv_obj_t * obj);
+
+/**
+ * Get the end angle of an arc.
+ * @param obj       pointer to an arc object
+ * @return          the end angle [0..360]  (if `LV_USE_FLOAT` is enabled it can be fractional too.)
+ */
+lv_value_precise_t lv_arc_get_end_angle(lv_obj_t * obj);
+
+/**
  * Get the start angle of an arc background.
  * @param obj       pointer to an arc object
  * @return          the  start angle [0..360]  (if `LV_USE_FLOAT` is enabled it can be fractional too.)
@@ -197,6 +253,20 @@ lv_value_precise_t lv_arc_get_bg_angle_start(lv_obj_t * obj);
  * @return          the end angle [0..360]  (if `LV_USE_FLOAT` is enabled it can be fractional too.)
  */
 lv_value_precise_t lv_arc_get_bg_angle_end(lv_obj_t * obj);
+
+/**
+ * Get the start angle of an arc background.
+ * @param obj       pointer to an arc object
+ * @return          the  start angle [0..360]  (if `LV_USE_FLOAT` is enabled it can be fractional too.)
+ */
+lv_value_precise_t lv_arc_get_bg_start_angle(lv_obj_t * obj);
+
+/**
+ * Get the end angle of an arc background.
+ * @param obj       pointer to an arc object
+ * @return          the end angle [0..360]  (if `LV_USE_FLOAT` is enabled it can be fractional too.)
+ */
+lv_value_precise_t lv_arc_get_bg_end_angle(lv_obj_t * obj);
 
 /**
  * Get the value of an arc

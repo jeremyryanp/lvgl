@@ -134,6 +134,16 @@ void lv_arc_set_end_angle(lv_obj_t * obj, lv_value_precise_t end)
     inv_knob_area(obj);
 }
 
+void lv_arc_set_angle_start(lv_obj_t * obj, lv_value_precise_t start)
+{
+    lv_arc_set_start_angle(obj,start);
+}
+
+void lv_arc_set_angle_end(lv_obj_t * obj, lv_value_precise_t end)
+{
+    lv_arc_set_end_angle(obj,end);
+}
+
 void lv_arc_set_angles(lv_obj_t * obj, lv_value_precise_t start, lv_value_precise_t end)
 {
     lv_arc_set_end_angle(obj, end);
@@ -182,6 +192,16 @@ void lv_arc_set_bg_end_angle(lv_obj_t * obj, lv_value_precise_t end)
     arc->bg_angle_end = end;
 
     value_update(obj);
+}
+
+void lv_arc_set_bg_angle_start(lv_obj_t * obj, lv_value_precise_t start)
+{
+    lv_arc_set_bg_start_angle(obj, start);
+}
+
+void lv_arc_set_bg_angle_end(lv_obj_t * obj, lv_value_precise_t end)
+{
+    lv_arc_set_bg_end_angle(obj, end);
 }
 
 void lv_arc_set_bg_angles(lv_obj_t * obj, lv_value_precise_t start, lv_value_precise_t end)
@@ -244,6 +264,38 @@ void lv_arc_set_value(lv_obj_t * obj, int32_t value)
     arc->value = new_value;
 
     value_update(obj);
+}
+
+void lv_arc_set_min_value(lv_obj_t * obj, int32_t value)
+{
+    LV_ASSERT_OBJ(obj, MY_CLASS);
+    lv_arc_t * arc = (lv_arc_t *)obj;
+
+    if(arc->min_value == min) return;
+
+    arc->min_value = min;
+
+    if(arc->value < min) {
+        arc->value = min;
+    }
+
+    value_update(obj); /*value has changed relative to the new range*/
+}
+
+void lv_arc_set_max_value(lv_obj_t * obj, int32_t value)
+{
+    LV_ASSERT_OBJ(obj, MY_CLASS);
+    lv_arc_t * arc = (lv_arc_t *)obj;
+
+    if(arc->max_value == value) return;
+
+    arc->max_value = value;
+
+    if(arc->value > value) {
+        arc->value = value;
+    }
+
+    value_update(obj); /*value has changed relative to the new range*/
 }
 
 void lv_arc_set_range(lv_obj_t * obj, int32_t min, int32_t max)

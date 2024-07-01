@@ -271,12 +271,12 @@ void lv_arc_set_min_value(lv_obj_t * obj, int32_t value)
     LV_ASSERT_OBJ(obj, MY_CLASS);
     lv_arc_t * arc = (lv_arc_t *)obj;
 
-    if(arc->min_value == min) return;
+    if(arc->min_value == value) return;
 
-    arc->min_value = min;
+    arc->min_value = value;
 
-    if(arc->value < min) {
-        arc->value = min;
+    if(arc->value < value) {
+        arc->value = value;
     }
 
     value_update(obj); /*value has changed relative to the new range*/

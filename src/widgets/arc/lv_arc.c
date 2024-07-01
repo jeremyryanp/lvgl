@@ -350,6 +350,18 @@ lv_value_precise_t lv_arc_get_angle_end(lv_obj_t * obj)
     return ((lv_arc_t *) obj)->indic_angle_end;
 }
 
+lv_value_precise_t lv_arc_get_start_angle(lv_obj_t * obj)
+{
+    LV_ASSERT_OBJ(obj, MY_CLASS);
+    return ((lv_arc_t *) obj)->indic_angle_start;
+}
+
+lv_value_precise_t lv_arc_get_end_angle(lv_obj_t * obj)
+{
+    LV_ASSERT_OBJ(obj, MY_CLASS);
+    return ((lv_arc_t *) obj)->indic_angle_end;
+}
+
 lv_value_precise_t lv_arc_get_bg_angle_start(lv_obj_t * obj)
 {
     LV_ASSERT_OBJ(obj, MY_CLASS);
@@ -357,6 +369,18 @@ lv_value_precise_t lv_arc_get_bg_angle_start(lv_obj_t * obj)
 }
 
 lv_value_precise_t lv_arc_get_bg_angle_end(lv_obj_t * obj)
+{
+    LV_ASSERT_OBJ(obj, MY_CLASS);
+    return ((lv_arc_t *) obj)->bg_angle_end;
+}
+
+lv_value_precise_t lv_arc_get_bg_start_angle(lv_obj_t * obj)
+{
+    LV_ASSERT_OBJ(obj, MY_CLASS);
+    return ((lv_arc_t *) obj)->bg_angle_start;
+}
+
+lv_value_precise_t lv_arc_get_bg_end_angle(lv_obj_t * obj)
 {
     LV_ASSERT_OBJ(obj, MY_CLASS);
     return ((lv_arc_t *) obj)->bg_angle_end;

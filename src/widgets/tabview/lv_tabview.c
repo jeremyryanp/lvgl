@@ -150,9 +150,9 @@ void lv_tabview_set_active(lv_obj_t * obj, uint32_t idx, lv_anim_enable_t anim_e
     tabview->tab_cur = idx;
 }
 
-void lv_tabview_set_active(lv_obj_t * obj, uint32_t idx, lv_anim_enable_t anim_en)
+void lv_tabview_set_tab_active(lv_obj_t * obj, uint32_t idx, lv_anim_enable_t anim_en)
 {
-    lv_tabview_set_tab_active(obj, idx, anim_en);
+    lv_tabview_set_active(obj, idx, anim_en);
 }
 
 void lv_tabview_set_tab_bar_position(lv_obj_t * obj, lv_dir_t dir)

@@ -239,8 +239,7 @@ void lv_image_set_pivot_x(lv_obj_t * obj, int32_t x)
 
     if(img->pivot.x == x) return;
 
-    img->pivot.x = x;
-    lv_obj_invalidate(obj);
+    lv_image_set_pivot(obj, x, img->pivot.y);
 }
 
 void lv_image_set_pivot_y(lv_obj_t * obj, int32_t y)
@@ -250,9 +249,8 @@ void lv_image_set_pivot_y(lv_obj_t * obj, int32_t y)
     lv_image_t * img = (lv_image_t *)obj;
 
     if(img->pivot.y == y) return;
-
-    img->pivot.y = y;
-    lv_obj_invalidate(obj);
+    
+    lv_image_set_pivot(obj, img->pivot.x, y);
 }
 
 void lv_image_set_pivot(lv_obj_t * obj, int32_t x, int32_t y)

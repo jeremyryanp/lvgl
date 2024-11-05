@@ -827,6 +827,12 @@ void lv_obj_invalidate(const lv_obj_t * obj)
 {
     LV_ASSERT_OBJ(obj, MY_CLASS);
 
+    //If the object isnt visible, no need to invalidate the area
+    lv_obj_t* active_screen = lv_screen_active();
+    if (lv_obj_get_screen(obj) != active_screen) {
+      return;  
+    } 
+
     /*Truncate the area to the object*/
     lv_area_t obj_coords;
     int32_t ext_size = _lv_obj_get_ext_draw_size(obj);

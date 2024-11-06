@@ -118,7 +118,8 @@ lv_property_t lv_obj_get_style_property(lv_obj_t * obj, lv_prop_id_t id, uint32_
 {
     lv_property_t value;
 
-    if(id == LV_PROPERTY_ID_INVALID || id >= LV_PROPERTY_ID_START) {
+    uint32_t index = LV_PROPERTY_ID_INDEX(id);
+    if(id == LV_PROPERTY_ID_INVALID || index >= LV_PROPERTY_ID_START) {
         LV_LOG_WARN("invalid style property id %d", id);
         value.id = LV_PROPERTY_ID_INVALID;
         value.num = 0;

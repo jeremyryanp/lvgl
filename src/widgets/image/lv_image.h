@@ -134,6 +134,21 @@ void lv_image_set_rotation(lv_obj_t * obj, int32_t angle);
 void lv_image_set_pivot(lv_obj_t * obj, int32_t x, int32_t y);
 
 /**
+ * Set an offset for the source of an image so the image will be displayed from the new origin.
+ * @param obj       pointer to an image
+ * @param x         the new offset along x axis.
+ */
+void lv_image_set_pivot_x(lv_obj_t * obj, int32_t x);
+
+/**
+ * Set an offset for the source of an image.
+ * so the image will be displayed from the new origin.
+ * @param obj       pointer to an image
+ * @param y         the new offset along y axis.
+ */
+void lv_image_set_pivot_y(lv_obj_t * obj, int32_t y);
+
+/**
  * Set the zoom factor of the image.
  * Note that indexed and alpha only images can't be transformed.
  * @param obj       pointer to an image object
@@ -244,6 +259,20 @@ int32_t lv_image_get_rotation(lv_obj_t * obj);
  * @param pivot     store the rotation center here
  */
 void lv_image_get_pivot(lv_obj_t * obj, lv_point_t * pivot);
+
+/**
+ * Get the pivot's x attribute of the image object.
+ * @param obj       pointer to an image
+ * @return          pivot X value.
+ */
+int32_t lv_image_get_pivot_x(lv_obj_t * obj);
+
+/**
+ * Get the pivot's y attribute of the image object.
+ * @param obj       pointer to an image
+ * @return          pivot Y value.
+ */
+int32_t lv_image_get_pivot_y(lv_obj_t * obj);
 
 /**
  * Get the zoom factor of the image.

@@ -355,6 +355,28 @@ void lv_image_set_pivot(lv_obj_t * obj, int32_t x, int32_t y)
     lv_obj_invalidate_area(obj, &a);
 }
 
+void lv_image_set_pivot_x(lv_obj_t * obj, int32_t x)
+{
+    LV_ASSERT_OBJ(obj, MY_CLASS);
+
+    lv_image_t * img = (lv_image_t *)obj;
+
+    if(img->pivot.x == x) return;
+
+    lv_image_set_pivot(obj, x, img->pivot.y);
+}
+
+void lv_image_set_pivot_y(lv_obj_t * obj, int32_t y)
+{
+    LV_ASSERT_OBJ(obj, MY_CLASS);
+
+    lv_image_t * img = (lv_image_t *)obj;
+
+    if(img->pivot.y == y) return;
+
+    lv_image_set_pivot(obj, img->pivot.x, y);
+}
+
 void lv_image_set_scale(lv_obj_t * obj, uint32_t zoom)
 {
     LV_ASSERT_OBJ(obj, MY_CLASS);
@@ -502,6 +524,24 @@ void lv_image_get_pivot(lv_obj_t * obj, lv_point_t * pivot)
 
     pivot->x = lv_pct_to_px(img->pivot.x, img->w);
     pivot->y = lv_pct_to_px(img->pivot.y, img->h);
+}
+
+int32_t lv_image_get_pivot_x(lv_obj_t * obj)
+{
+    LV_ASSERT_OBJ(obj, MY_CLASS);
+
+    lv_image_t * img = (lv_image_t *)obj;
+
+    return img->pivot.x;
+}
+
+int32_t lv_image_get_pivot_y(lv_obj_t * obj)
+{
+    LV_ASSERT_OBJ(obj, MY_CLASS);
+
+    lv_image_t * img = (lv_image_t *)obj;
+
+    return img->pivot.y;
 }
 
 int32_t lv_image_get_scale(lv_obj_t * obj)

@@ -177,6 +177,30 @@ void lv_bar_set_orientation(lv_obj_t * obj, lv_bar_orientation_t orientation)
     lv_obj_invalidate(obj);
 }
 
+void lv_bar_set_min_value(lv_obj_t * obj, int32_t value)
+{
+    LV_ASSERT_OBJ(obj, MY_CLASS);
+
+    lv_bar_t * bar = (lv_bar_t *)obj;
+
+    int32_t min = value;
+    int32_t max = bar->max_value;
+
+    lv_bar_set_range(obj, min, max);
+}
+
+void lv_bar_set_max_value(lv_obj_t * obj, int32_t value)
+{
+    LV_ASSERT_OBJ(obj, MY_CLASS);
+
+    lv_bar_t * bar = (lv_bar_t *)obj;
+
+    int32_t min = bar->min_value;
+    int32_t max = value;
+
+    lv_bar_set_range(obj, min, max);
+}
+
 /*=====================
  * Getter functions
  *====================*/

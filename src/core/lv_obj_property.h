@@ -148,6 +148,8 @@ lv_result_t lv_obj_set_property(lv_obj_t * obj, const lv_property_t * value);
  */
 lv_result_t lv_obj_set_properties(lv_obj_t * obj, const lv_property_t * value, uint32_t count);
 
+void lv_prop_set_empty(lv_obj_t * obj);
+
 /*=====================
  * Getter functions
  *====================*/
@@ -192,6 +194,8 @@ lv_prop_id_t lv_obj_class_property_get_id(const lv_obj_class_t * clz, const char
  * @return          property ID found or `LV_PROPERTY_ID_INVALID` if not found.
  */
 lv_prop_id_t lv_style_property_get_id(const char * name);
+
+lv_property_t lv_prop_get_empty(lv_obj_t * obj);
 
 /**********************
  *      MACROS

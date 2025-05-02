@@ -260,6 +260,18 @@ lv_obj_t * lv_tabview_get_tab_bar(lv_obj_t * tv)
     return lv_obj_get_child(tv, 0);
 }
 
+void lv_tabview_set_tab_active(lv_obj_t * obj, uint32_t idx, lv_anim_enable_t anim_en)
+{
+    lv_tabview_set_active(obj, idx, anim_en);
+}
+
+uint32_t lv_tabview_get_active(lv_obj_t * obj)
+{
+    LV_ASSERT_OBJ(obj, MY_CLASS);
+    lv_tabview_t * tabview = (lv_tabview_t *)obj;
+    return tabview->tab_cur;
+}
+
 /**********************
  *   STATIC FUNCTIONS
  **********************/

@@ -140,6 +140,34 @@ void lv_arc_set_change_rate(lv_obj_t * obj, uint32_t rate);
  */
 void lv_arc_set_knob_offset(lv_obj_t * obj, int32_t offset);
 
+/**
+ * Set the start angle of an arc. 0 deg: right, 90 bottom, etc.
+ * @param obj       pointer to an arc object
+ * @param start     the start angle. (if `LV_USE_FLOAT` is enabled it can be fractional too.)
+ */
+void lv_arc_set_angle_start(lv_obj_t * obj, lv_value_precise_t start);
+
+/**
+ * Set the end angle of an arc. 0 deg: right, 90 bottom, etc.
+ * @param obj       pointer to an arc object
+ * @param end       the end angle  (if `LV_USE_FLOAT` is enabled it can be fractional too.)
+ */
+void lv_arc_set_angle_end(lv_obj_t * obj, lv_value_precise_t end);
+
+/**
+ * Set the start angle of an arc background. 0 deg: right, 90 bottom, etc.
+ * @param obj       pointer to an arc object
+ * @param start     the start angle  (if `LV_USE_FLOAT` is enabled it can be fractional too.)
+ */
+void lv_arc_set_bg_angle_start(lv_obj_t * obj, lv_value_precise_t start);
+
+/**
+ * Set the start angle of an arc background. 0 deg: right, 90 bottom etc.
+ * @param obj       pointer to an arc object
+ * @param end       the end angle  (if `LV_USE_FLOAT` is enabled it can be fractional too.)
+ */
+void lv_arc_set_bg_angle_end(lv_obj_t * obj, lv_value_precise_t end);
+
 /*=====================
  * Getter functions
  *====================*/
@@ -213,6 +241,34 @@ int32_t lv_arc_get_rotation(const lv_obj_t * obj);
  * @return          arc's current knob offset
  */
 int32_t lv_arc_get_knob_offset(const lv_obj_t * obj);
+
+/**
+ * Get the start angle of an arc.
+ * @param obj       pointer to an arc object
+ * @return          the start angle [0..360]  (if `LV_USE_FLOAT` is enabled it can be fractional too.)
+ */
+lv_value_precise_t lv_arc_get_start_angle(lv_obj_t * obj);
+
+/**
+ * Get the end angle of an arc.
+ * @param obj       pointer to an arc object
+ * @return          the end angle [0..360]  (if `LV_USE_FLOAT` is enabled it can be fractional too.)
+ */
+lv_value_precise_t lv_arc_get_end_angle(lv_obj_t * obj);
+
+/**
+ * Get the start angle of an arc background.
+ * @param obj       pointer to an arc object
+ * @return          the  start angle [0..360]  (if `LV_USE_FLOAT` is enabled it can be fractional too.)
+ */
+lv_value_precise_t lv_arc_get_bg_start_angle(lv_obj_t * obj);
+
+/**
+ * Get the end angle of an arc background.
+ * @param obj       pointer to an arc object
+ * @return          the end angle [0..360]  (if `LV_USE_FLOAT` is enabled it can be fractional too.)
+ */
+lv_value_precise_t lv_arc_get_bg_end_angle(lv_obj_t * obj);
 
 /*=====================
  * Other functions

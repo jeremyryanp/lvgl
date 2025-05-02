@@ -96,6 +96,22 @@ void lv_bar_set_mode(lv_obj_t * obj, lv_bar_mode_t mode);
  */
 void lv_bar_set_orientation(lv_obj_t * obj, lv_bar_orientation_t orientation);
 
+/**
+ * Set a minimum value on the bar
+ * @param obj           pointer to a bar object
+ * @param value         new minimum value
+ * @param anim          LV_ANIM_ON: set the value with an animation; LV_ANIM_OFF: change the value immediately
+ */
+void lv_bar_set_min_value(lv_obj_t * obj, int32_t value);
+
+/**
+ * Set a maximum value on the bar
+ * @param obj           pointer to a bar object
+ * @param value         new maximum value
+ * @param anim          LV_ANIM_ON: set the value with an animation; LV_ANIM_OFF: change the value immediately
+ */
+void lv_bar_set_max_value(lv_obj_t * obj, int32_t value);
+
 /*=====================
  * Getter functions
  *====================*/

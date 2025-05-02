@@ -69,6 +69,9 @@ lv_result_t lv_obj_set_property(lv_obj_t * obj, const lv_property_t * value)
     }
 
     if(index < LV_PROPERTY_ID_START) {
+        // the property points to the real index + 1. 
+        // i think its because the style property group starts at 1 while everything else starts at 100, 200 etc 
+        index = index - 1;
         lv_obj_set_local_style_prop(obj, index, value->style, value->selector);
         return LV_RESULT_OK;
     }
@@ -189,6 +192,16 @@ lv_prop_id_t lv_obj_property_get_id(const lv_obj_t * obj, const char * name)
     LV_UNUSED(property_name_compare);
 #endif
     return LV_PROPERTY_ID_INVALID;
+}
+
+lv_property_t lv_prop_get_empty(lv_obj_t * obj)
+{
+    LV_LOG_WARN("empty property get called for obj %p", obj);
+}
+
+void lv_prop_set_empty(lv_obj_t * obj)
+{
+    LV_LOG_WARN("empty property set called for obj %p", obj);
 }
 
 /**********************

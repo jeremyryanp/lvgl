@@ -102,6 +102,21 @@ lv_obj_t * lv_tabview_get_content(lv_obj_t * obj);
  */
 lv_obj_t * lv_tabview_get_tab_bar(lv_obj_t * obj);
 
+/**
+ * Show a tab
+ * @param obj       pointer to a tabview widget
+ * @param idx       the index of the tab to show
+ * @param anim_en   LV_ANIM_ON/OFF
+ */
+void lv_tabview_set_tab_active(lv_obj_t * obj, uint32_t idx, lv_anim_enable_t anim_en);
+
+/**
+ * Get the current tab's index
+ * @param obj       pointer to a tabview widget
+ * @return          the zero based index of the current tab
+ */
+uint32_t lv_tabview_get_active(lv_obj_t * obj);
+
 /**********************
  *      MACROS
  **********************/

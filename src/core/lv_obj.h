@@ -369,6 +369,13 @@ bool lv_obj_has_class(const lv_obj_t * obj, const lv_obj_class_t * class_p);
 const lv_obj_class_t * lv_obj_get_class(const lv_obj_t * obj);
 
 /**
+ * Get the class name of the object
+ * @param obj   pointer to an object
+ * @return      the class name of the object
+ */
+const char * lv_obj_get_class_name(const lv_obj_t * obj);
+
+/**
  * Check if any object is still "alive".
  * @param obj       pointer to an object
  * @return          true: valid

@@ -410,6 +410,11 @@ const lv_obj_class_t * lv_obj_get_class(const lv_obj_t * obj)
     return obj->class_p;
 }
 
+const char * lv_obj_get_class_name(const lv_obj_t * obj)
+{
+    return obj->class_p->name;
+}
+
 bool lv_obj_is_valid(const lv_obj_t * obj)
 {
     lv_display_t * disp = lv_display_get_next(NULL);

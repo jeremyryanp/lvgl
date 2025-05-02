@@ -39,66 +39,6 @@ static void update_align(lv_obj_t * obj);
     static lv_point_t lv_image_get_pivot_helper(lv_obj_t * obj);
 #endif
 
-#if LV_USE_OBJ_PROPERTY
-static const lv_property_ops_t properties[] = {
-    {
-        .id = LV_PROPERTY_IMAGE_SRC,
-        .setter = lv_image_set_src,
-        .getter = lv_image_get_src,
-    },
-    {
-        .id = LV_PROPERTY_IMAGE_OFFSET_X,
-        .setter = lv_image_set_offset_x,
-        .getter = lv_image_get_offset_x,
-    },
-    {
-        .id = LV_PROPERTY_IMAGE_OFFSET_Y,
-        .setter = lv_image_set_offset_y,
-        .getter = lv_image_get_offset_y,
-    },
-    {
-        .id = LV_PROPERTY_IMAGE_ROTATION,
-        .setter = lv_image_set_rotation,
-        .getter = lv_image_get_rotation,
-    },
-    {
-        .id = LV_PROPERTY_IMAGE_PIVOT,
-        .setter = lv_image_set_pivot_helper,
-        .getter = lv_image_get_pivot_helper,
-    },
-    {
-        .id = LV_PROPERTY_IMAGE_SCALE,
-        .setter = lv_image_set_scale,
-        .getter = lv_image_get_scale,
-    },
-    {
-        .id = LV_PROPERTY_IMAGE_SCALE_X,
-        .setter = lv_image_set_scale_x,
-        .getter = lv_image_get_scale_x,
-    },
-    {
-        .id = LV_PROPERTY_IMAGE_SCALE_Y,
-        .setter = lv_image_set_scale_y,
-        .getter = lv_image_get_scale_y,
-    },
-    {
-        .id = LV_PROPERTY_IMAGE_BLEND_MODE,
-        .setter = lv_image_set_blend_mode,
-        .getter = lv_image_get_blend_mode,
-    },
-    {
-        .id = LV_PROPERTY_IMAGE_ANTIALIAS,
-        .setter = lv_image_set_antialias,
-        .getter = lv_image_get_antialias,
-    },
-    {
-        .id = LV_PROPERTY_IMAGE_INNER_ALIGN,
-        .setter = lv_image_set_inner_align,
-        .getter = lv_image_get_inner_align,
-    },
-};
-#endif
-
 /**********************
  *  STATIC VARIABLES
  **********************/
@@ -111,18 +51,6 @@ const lv_obj_class_t lv_image_class = {
     .instance_size = sizeof(lv_image_t),
     .base_class = &lv_obj_class,
     .name = "image",
-#if LV_USE_OBJ_PROPERTY
-    .prop_index_start = LV_PROPERTY_IMAGE_START,
-    .prop_index_end = LV_PROPERTY_IMAGE_END,
-    .properties = properties,
-    .properties_count = sizeof(properties) / sizeof(properties[0]),
-
-#if LV_USE_OBJ_PROPERTY_NAME
-    .property_names = lv_image_property_names,
-    .names_count = sizeof(lv_image_property_names) / sizeof(lv_property_name_t),
-#endif
-
-#endif
 };
 
 /**********************

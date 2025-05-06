@@ -73,6 +73,8 @@ lv_obj_t * lv_line_segment_create(lv_obj_t * parent)
     };
     lv_line_set_points_mutable(obj, points, 2);
 
+    line->segment=true;
+
     return obj;
 }
 
@@ -139,15 +141,15 @@ void lv_line_set_angle(lv_obj_t * obj, lv_value_precise_t angle)
     LV_ASSERT_OBJ(obj, MY_CLASS);
     lv_line_t * line = (lv_line_t *)obj;
 
-    if(line->point_num == 2) {
+    if(line->segment) {
         line->angle = angle;
 
         lv_point_precise_t * p0 = &line->point_array.mut[0];
         lv_point_precise_t * p1 = &line->point_array.mut[1];
         
         // Calculate p1 coordinates using angle and length
-        p1->x = p0->x + line->length * lv_trigo_cos(angle);
-        p1->y = p0->y + line->length * lv_trigo_sin(angle);
+        p1->x = p0->x + length * lv_trigo_cos(angle);
+        p1->y = p0->y + length * lv_trigo_sin(angle);
 
         lv_obj_refresh_self_size(obj);
         lv_obj_invalidate(obj);
@@ -159,7 +161,7 @@ void lv_line_set_length(lv_obj_t * obj, lv_value_precise_t length)
     LV_ASSERT_OBJ(obj, MY_CLASS);
     lv_line_t * line = (lv_line_t *)obj;
     
-    if(line->point_num == 2) {
+    if(line->segment) {
         lv_value_precise_t angle = line->angle;
 
         lv_point_precise_t * p0 = &line->point_array.mut[0];

@@ -37,6 +37,7 @@ struct lv_line_t {
     uint32_t point_num;                 /**< Number of points in 'point_array'*/
     uint32_t y_inv : 1;                  /**< 1: y == 0 will be on the bottom*/
     uint32_t point_array_is_mutable : 1; /**< whether the point array is const or mutable*/
+    uint32_t segment : 0;
     lv_value_precise_t angle;
     lv_value_precise_t length;
 };

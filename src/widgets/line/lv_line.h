@@ -37,6 +37,13 @@ LV_ATTRIBUTE_EXTERN_DATA extern const lv_obj_class_t lv_line_class;
  */
 lv_obj_t * lv_line_create(lv_obj_t * parent);
 
+/**
+ * Create a line object
+ * @param parent pointer to an object, it will be the parent of the new line
+ * @return pointer to the created line
+ */
+lv_obj_t * lv_line_segment_create(lv_obj_t * parent);
+
 /*=====================
  * Setter functions
  *====================*/
@@ -65,6 +72,18 @@ void lv_line_set_points_mutable(lv_obj_t * obj, lv_point_precise_t points[], uin
  * @param en        true: enable the y inversion, false:disable the y inversion
  */
 void lv_line_set_y_invert(lv_obj_t * obj, bool en);
+
+void lv_line_set_x0(lv_obj_t * obj, lv_value_precise_t x0);
+
+void lv_line_set_y0(lv_obj_t * obj, lv_value_precise_t y0);
+
+void lv_line_set_x1(lv_obj_t * obj, lv_value_precise_t x1);
+
+void lv_line_set_y1(lv_obj_t * obj, lv_value_precise_t y1);
+
+void lv_line_set_angle(lv_obj_t * obj, lv_value_precise_t angle);
+
+void lv_line_set_length(lv_obj_t * obj, lv_value_precise_t length);
 
 /*=====================
  * Getter functions
@@ -104,6 +123,19 @@ lv_point_precise_t * lv_line_get_points_mutable(lv_obj_t * obj);
  * @return          true: y inversion is enabled, false: disabled
  */
 bool lv_line_get_y_invert(const lv_obj_t * obj);
+
+lv_value_precise_t lv_line_get_x0(const lv_obj_t * obj);
+
+lv_value_precise_t lv_line_get_y0(const lv_obj_t * obj);
+
+lv_value_precise_t lv_line_get_x1(const lv_obj_t * obj);
+
+lv_value_precise_t lv_line_get_y1(const lv_obj_t * obj);
+
+lv_value_precise_t lv_line_get_angle(const lv_obj_t * obj);
+
+lv_value_precise_t lv_line_get_length(const lv_obj_t * obj);
+
 
 /**********************
  *      MACROS

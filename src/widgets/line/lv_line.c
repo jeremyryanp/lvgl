@@ -61,23 +61,6 @@ lv_obj_t * lv_line_create(lv_obj_t * parent)
     return obj;
 }
 
-lv_obj_t * lv_line_segment_create(lv_obj_t * parent)
-{
-    LV_LOG_INFO("begin");
-    lv_obj_t * obj = lv_obj_class_create_obj(MY_CLASS, parent);
-    lv_obj_class_init_obj(obj);
-
-    lv_point_precise_t points[] = {
-        {0, 0},
-        {100, 0}
-    };
-    lv_line_set_points_mutable(obj, points, 2);
-
-    line->segment=true;
-
-    return obj;
-}
-
 /*=====================
  * Setter functions
  *====================*/
@@ -102,78 +85,6 @@ void lv_line_set_y_invert(lv_obj_t * obj, bool en)
     line->y_inv = en ? 1U : 0U;
 
     lv_obj_invalidate(obj);
-}
-
-void lv_line_set_x0(lv_obj_t * obj, lv_value_precise_t x0)
-{
-    LV_ASSERT_OBJ(obj, MY_CLASS);
-    lv_line_t * line = (lv_line_t *)obj;
-    line->point_array.mut[0].x = x0;
-    lv_obj_invalidate(obj);
-}
-
-void lv_line_set_y0(lv_obj_t * obj, lv_value_precise_t y0)
-{
-    LV_ASSERT_OBJ(obj, MY_CLASS);
-    lv_line_t * line = (lv_line_t *)obj;
-    line->point_array.mut[0].y = y0;
-    lv_obj_invalidate(obj);
-}
-
-void lv_line_set_x1(lv_obj_t * obj, lv_value_precise_t x1)
-{
-    LV_ASSERT_OBJ(obj, MY_CLASS);
-    lv_line_t * line = (lv_line_t *)obj;
-    line->point_array.mut[1].x = x1;
-    lv_obj_invalidate(obj);
-}
-
-void lv_line_set_y1(lv_obj_t * obj, lv_value_precise_t y1)
-{
-    LV_ASSERT_OBJ(obj, MY_CLASS);
-    lv_line_t * line = (lv_line_t *)obj;    
-    line->point_array.mut[1].y = y1;
-    lv_obj_invalidate(obj);
-}
-
-void lv_line_set_angle(lv_obj_t * obj, lv_value_precise_t angle)
-{   
-    LV_ASSERT_OBJ(obj, MY_CLASS);
-    lv_line_t * line = (lv_line_t *)obj;
-
-    if(line->segment) {
-        line->angle = angle;
-
-        lv_point_precise_t * p0 = &line->point_array.mut[0];
-        lv_point_precise_t * p1 = &line->point_array.mut[1];
-        
-        // Calculate p1 coordinates using angle and length
-        p1->x = p0->x + length * lv_trigo_cos(angle);
-        p1->y = p0->y + length * lv_trigo_sin(angle);
-
-        lv_obj_refresh_self_size(obj);
-        lv_obj_invalidate(obj);
-    }
-}
-
-void lv_line_set_length(lv_obj_t * obj, lv_value_precise_t length)
-{
-    LV_ASSERT_OBJ(obj, MY_CLASS);
-    lv_line_t * line = (lv_line_t *)obj;
-    
-    if(line->segment) {
-        lv_value_precise_t angle = line->angle;
-
-        lv_point_precise_t * p0 = &line->point_array.mut[0];
-        lv_point_precise_t * p1 = &line->point_array.mut[1];
-        
-        // Calculate p1 coordinates using angle and length
-        p1->x = p0->x + length * lv_trigo_cos(angle);
-        p1->y = p0->y + length * lv_trigo_sin(angle);
-
-        lv_obj_refresh_self_size(obj);
-        lv_obj_invalidate(obj);
-    }
 }
 
 /*=====================
@@ -223,48 +134,6 @@ bool lv_line_get_y_invert(const lv_obj_t * obj)
     lv_line_t * line = (lv_line_t *)obj;
 
     return line->y_inv == 1U;
-}
-
-lv_value_precise_t lv_line_get_x0(const lv_obj_t * obj)
-{
-    LV_ASSERT_OBJ(obj, MY_CLASS);
-    lv_line_t * line = (lv_line_t *)obj;
-    return line->point_array.constant[0].x;
-}
-
-lv_value_precise_t lv_line_get_y0(const lv_obj_t * obj)
-{
-    LV_ASSERT_OBJ(obj, MY_CLASS);
-    lv_line_t * line = (lv_line_t *)obj;
-    return line->point_array.constant[0].y;
-}
-
-lv_value_precise_t lv_line_get_x1(const lv_obj_t * obj)
-{
-    LV_ASSERT_OBJ(obj, MY_CLASS);
-    lv_line_t * line = (lv_line_t *)obj;
-    return line->point_array.constant[1].x;
-}
-
-lv_value_precise_t lv_line_get_y1(const lv_obj_t * obj)
-{
-    LV_ASSERT_OBJ(obj, MY_CLASS);
-    lv_line_t * line = (lv_line_t *)obj;
-    return line->point_array.constant[1].y;
-}
-
-lv_value_precise_t lv_line_get_angle(const lv_obj_t * obj)
-{
-    LV_ASSERT_OBJ(obj, MY_CLASS);
-    lv_line_t * line = (lv_line_t *)obj;
-    return line->angle;
-}
-
-lv_value_precise_t lv_line_get_length(const lv_obj_t * obj)
-{
-    LV_ASSERT_OBJ(obj, MY_CLASS);
-    lv_line_t * line = (lv_line_t *)obj;
-    return line->length;
 }
 
 /**********************

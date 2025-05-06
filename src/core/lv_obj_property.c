@@ -69,9 +69,6 @@ lv_result_t lv_obj_set_property(lv_obj_t * obj, const lv_property_t * value)
     }
 
     if(index < LV_PROPERTY_ID_START) {
-        // the property points to the real index + 1. 
-        // i think its because the style property group starts at 1 while everything else starts at 100, 200 etc 
-        index = index - 1;
         lv_obj_set_local_style_prop(obj, index, value->style, value->selector);
         return LV_RESULT_OK;
     }

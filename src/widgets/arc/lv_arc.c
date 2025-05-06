@@ -140,12 +140,12 @@ void lv_arc_set_end_angle(lv_obj_t * obj, lv_value_precise_t end)
 
 void lv_arc_set_angle_start(lv_obj_t * obj, lv_value_precise_t start)
 {
-    lv_arc_set_start_angle(obj,start);
+    lv_arc_set_start_angle(obj, start);
 }
 
 void lv_arc_set_angle_end(lv_obj_t * obj, lv_value_precise_t end)
 {
-    lv_arc_set_end_angle(obj,end);
+    lv_arc_set_end_angle(obj, end);
 }
 
 void lv_arc_set_angles(lv_obj_t * obj, lv_value_precise_t start, lv_value_precise_t end)

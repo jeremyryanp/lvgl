@@ -209,6 +209,8 @@ typedef struct lv_led_t lv_led_t;
 
 typedef struct lv_line_t lv_line_t;
 
+typedef struct lv_needle_t lv_needle_t;
+
 typedef struct lv_menu_load_page_event_data_t lv_menu_load_page_event_data_t;
 
 typedef struct lv_menu_history_t lv_menu_history_t;

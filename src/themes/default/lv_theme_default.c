@@ -112,6 +112,10 @@ typedef struct {
     lv_style_t line;
 #endif
 
+#if LV_USE_NEEDLE
+    lv_style_t needle;
+#endif
+
 #if LV_USE_TABLE
     lv_style_t table_cell;
 #endif
@@ -831,6 +835,12 @@ static void theme_apply(lv_theme_t * th, lv_obj_t * obj)
 #if LV_USE_LINE
     else if(lv_obj_check_type(obj, &lv_line_class)) {
         lv_obj_add_style(obj, &theme->styles.line, 0);
+    }
+#endif
+
+#if LV_USE_NEEDLE
+    else if(lv_obj_check_type(obj, &lv_needle_class)) {
+        lv_obj_add_style(obj, &theme->styles.needle, 0);
     }
 #endif
 

@@ -34,12 +34,11 @@ struct lv_needle_t {
     lv_value_precise_t pivot_x;
     lv_value_precise_t pivot_y;
 
-// value?
-//min & max?
-
-    lv_value_precise_t angle;
-    lv_value_precise_t length;
-    lv_value_precise_t back_length;
+    lv_value_precise_t start_angle;  // Starting angle in degrees
+    lv_value_precise_t end_angle;    // Ending angle in degrees
+    lv_value_precise_t value;        // Current value (0-100)
+    lv_value_precise_t length;       // Length of the needle
+    lv_value_precise_t back_length;  // Length of the back part of the needle
 };
 
 

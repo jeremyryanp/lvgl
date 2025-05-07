@@ -21,18 +21,6 @@ extern "C" {
  *      DEFINES
  *********************/
 
-// SCRIPT INSERT START
-#if LV_USE_OBJ_PROPERTY
-enum {
-    LV_PROPERTY_ID(NEEDLE, ANGLE,       LV_PROPERTY_TYPE_PRECISE, 0),
-    LV_PROPERTY_ID(NEEDLE, BACK_LENGTH, LV_PROPERTY_TYPE_PRECISE, 1),
-    LV_PROPERTY_ID(NEEDLE, LENGTH,      LV_PROPERTY_TYPE_PRECISE, 2),
-    LV_PROPERTY_ID(NEEDLE, PIVOT_X,     LV_PROPERTY_TYPE_PRECISE, 3),
-    LV_PROPERTY_ID(NEEDLE, PIVOT_Y,     LV_PROPERTY_TYPE_PRECISE, 4),
-    LV_PROPERTY_NEEDLE_END,
-};
-#endif
-// SCRIPT INSERT END
 /**********************
  * GLOBAL PROTOTYPES
  **********************/
@@ -83,13 +71,26 @@ void lv_needle_set_pivot_x(lv_obj_t * obj, lv_value_precise_t x);
  */
 void lv_needle_set_pivot_y(lv_obj_t * obj, lv_value_precise_t y);
 
-
 /**
- * Set the angle of the needle
+ * Set the start angle of the needle
  * @param obj       pointer to a needle object
  * @param angle     angle in degrees (0-360)
  */
-void lv_needle_set_angle(lv_obj_t * obj, lv_value_precise_t angle);
+void lv_needle_set_start_angle(lv_obj_t * obj, lv_value_precise_t angle);
+
+/**
+ * Set the end angle of the needle
+ * @param obj       pointer to a needle object
+ * @param angle     angle in degrees (0-360)
+ */
+void lv_needle_set_end_angle(lv_obj_t * obj, lv_value_precise_t angle);
+
+/**
+ * Set the value of the needle
+ * @param obj       pointer to a needle object
+ * @param value     value of the needle
+ */
+void lv_needle_set_value(lv_obj_t * obj, lv_value_precise_t value);
 
 /**
  * Set the length of the needle
@@ -104,6 +105,21 @@ void lv_needle_set_length(lv_obj_t * obj, lv_value_precise_t length);
  * @param length    length of the back part of the needle
  */
 void lv_needle_set_back_length(lv_obj_t * obj, lv_value_precise_t length);
+
+/**
+ * Set the width of the needle
+ * @param obj       pointer to a needle object
+ * @param width     width of the needle
+ */
+void lv_needle_set_width(lv_obj_t * obj, lv_value_precise_t width);
+
+/**
+ * Set the color of the needle
+ * @param obj       pointer to a needle object
+ * @param color     color of the needle
+ */
+
+void lv_needle_set_color(lv_obj_t * obj, lv_color_t color);
 
 /*=====================
  * Getter functions
@@ -124,11 +140,25 @@ lv_value_precise_t lv_needle_get_pivot_x(lv_obj_t * obj);
 lv_value_precise_t lv_needle_get_pivot_y(lv_obj_t * obj);
 
 /**
- * Get the angle of the needle
+ * Get the start angle of the needle
  * @param obj       pointer to a needle object
  * @return          angle in degrees (0-360)
  */
-lv_value_precise_t lv_needle_get_angle(lv_obj_t * obj);
+lv_value_precise_t lv_needle_get_start_angle(lv_obj_t * obj);
+
+/**
+ * Get the end angle of the needle
+ * @param obj       pointer to a needle object
+ * @return          angle in degrees (0-360)
+ */
+lv_value_precise_t lv_needle_get_end_angle(lv_obj_t * obj);
+
+/**
+ * Get the value of the needle
+ * @param obj       pointer to a needle object
+ * @return          value of the needle
+ */
+lv_value_precise_t lv_needle_get_value(lv_obj_t * obj);
 
 /**
  * Get the length of the needle
@@ -144,6 +174,19 @@ lv_value_precise_t lv_needle_get_length(lv_obj_t * obj);
  */
 lv_value_precise_t lv_needle_get_back_length(lv_obj_t * obj);
 
+/**
+ * Get the width of the needle
+ * @param obj       pointer to a needle object
+ * @return          width of the needle
+ */
+lv_value_precise_t lv_needle_get_width(lv_obj_t * obj);
+
+/**
+ * Get the color of the needle
+ * @param obj       pointer to a needle object
+ * @return          color of the needle
+ */
+lv_color_t lv_needle_get_color(lv_obj_t * obj);
 
 /**********************
  *      MACROS

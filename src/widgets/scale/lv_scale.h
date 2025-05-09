@@ -112,6 +112,20 @@ void lv_scale_set_label_show(lv_obj_t * obj, bool show_label);
 void lv_scale_set_range(lv_obj_t * obj, int32_t min, int32_t max);
 
 /**
+ * Set the minimum value of the scale range
+ * @param obj       pointer to a scale object
+ * @param min       minimum value of the scale
+ */
+void lv_scale_set_range_min(lv_obj_t * obj, int32_t min);
+
+/**
+ * Set the maximum value of the scale range
+ * @param obj       pointer to a scale object
+ * @param max       maximum value of the scale
+ */
+void lv_scale_set_range_max(lv_obj_t * obj, int32_t max);
+
+/**
  * Set properties specific to round scale
  * @param obj           pointer to a scale object
  * @param angle_range   the angular range of the scale
@@ -244,6 +258,20 @@ int32_t lv_scale_get_range_min_value(lv_obj_t * obj);
  * @return      section max range
  */
 int32_t lv_scale_get_range_max_value(lv_obj_t * obj);
+
+/**
+ * Get the min range for the given scale section
+ * @param obj   pointer to a scale section object
+ * @return      section minor range
+ */
+int32_t lv_scale_get_range_min(lv_obj_t * obj);
+
+/**
+ * Get the max range for the given scale section
+ * @param obj   pointer to a scale section object
+ * @return      section max range
+ */
+int32_t lv_scale_get_range_max(lv_obj_t * obj);
 
 /**********************
  *      MACROS

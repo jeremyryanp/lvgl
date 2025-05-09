@@ -59,7 +59,6 @@ lv_obj_t * lv_needle_create(lv_obj_t * parent)
     lv_obj_class_init_obj(obj);
     lv_obj_set_size(obj, lv_obj_get_width(parent), lv_obj_get_height(parent));
 
-    
     return obj;
 }
 
@@ -120,7 +119,6 @@ void lv_needle_set_color(lv_obj_t * obj, lv_color_t color)
 
 void lv_needle_set_start_angle(lv_obj_t * obj, lv_value_precise_t angle)
 {
-    printf("Setting start angle %d\n", angle);
     LV_ASSERT_OBJ(obj, MY_CLASS);
     lv_needle_t * needle = (lv_needle_t *)obj;
     needle->start_angle = angle;
@@ -129,17 +127,15 @@ void lv_needle_set_start_angle(lv_obj_t * obj, lv_value_precise_t angle)
 
 void lv_needle_set_end_angle(lv_obj_t * obj, lv_value_precise_t angle)
 {
-    printf("Setting end angle %d\n", angle);
     LV_ASSERT_OBJ(obj, MY_CLASS);
     lv_needle_t * needle = (lv_needle_t *)obj;
-    needle->end_angle = angle; 
+    needle->end_angle = angle;
     lv_obj_invalidate(obj);
 }
 
 void lv_needle_set_value(lv_obj_t * obj, lv_value_precise_t value)
 {
-    printf("Setting value %d\n", value);
-    LV_ASSERT_OBJ(obj, MY_CLASS);   
+    LV_ASSERT_OBJ(obj, MY_CLASS);
     lv_needle_t * needle = (lv_needle_t *)obj;
     needle->value = value;
     lv_obj_invalidate(obj);
@@ -209,7 +205,7 @@ static void lv_needle_constructor(const lv_obj_class_t * class_p, lv_obj_t * obj
 {
     LV_UNUSED(class_p);
     LV_TRACE_OBJ_CREATE("begin");
-    
+
     lv_needle_t * needle = (lv_needle_t *)obj;
     needle->pivot_x = 0;
     needle->pivot_y = 0;
@@ -218,7 +214,7 @@ static void lv_needle_constructor(const lv_obj_class_t * class_p, lv_obj_t * obj
     needle->value = 0;
     needle->length = 100;
     needle->back_length = 0;
-    
+
     lv_obj_remove_flag(obj, LV_OBJ_FLAG_CLICKABLE);
 
     LV_TRACE_OBJ_CREATE("finished");
@@ -248,13 +244,6 @@ static void lv_needle_event(const lv_obj_class_t * class_p, lv_event_t * e)
 
     if (code == LV_EVENT_DRAW_MAIN)
     {
-        printf("In draw main\n");
-        printf("Needle details - Pivot: (%d,%d), Start Angle: %d, End Angle: %d, Value: %d, Length: %d, Back Length: %d\n",
-               needle->pivot_x, needle->pivot_y,
-               needle->start_angle, needle->end_angle,
-               needle->value,
-               needle->length, needle->back_length);
-
         lv_layer_t * layer = lv_event_get_layer(e);
 
         lv_draw_line_dsc_t line_dsc;
@@ -262,45 +251,36 @@ static void lv_needle_event(const lv_obj_class_t * class_p, lv_event_t * e)
         lv_obj_init_draw_line_dsc(obj, LV_PART_MAIN, &line_dsc);
 
         // Calculate needle points based on pivot, angle and length
-        lv_point_precise_t p1, p2;
-        
+        lv_point_precise_t p2;
+
+        int32_t angle;
+        angle = lv_map(needle->value, 0, 100, (int32_t)needle->start_angle, (int32_t)needle->end_angle);
+
         // Calculate current angle based on value range
         lv_value_precise_t angle_range = needle->end_angle - needle->start_angle;
         lv_value_precise_t current_angle = needle->start_angle + (needle->value * angle_range / 100);
-        lv_value_precise_t rad = current_angle * LV_PI / 180;
-
-        printf("Angles - Start: %d, End: %d, Current: %d, Radians: %d\n", 
-               needle->start_angle, needle->end_angle, current_angle, rad);
 
         // Convert lv_trigo_sin output to proper sin value (-1 to 1)
-        lv_value_precise_t sin_val = lv_trigo_sin(current_angle) / 32768.0f;
-        lv_value_precise_t cos_val = lv_trigo_cos(current_angle) / 32768.0f;
+        float sin_val = lv_trigo_sin(angle) / 32768.0;
+        float cos_val = lv_trigo_cos(angle) / 32768.0;
 
-
-        p1.x = needle->pivot_x + needle->length * sin_val;
-        p1.y = needle->pivot_y + needle->length * cos_val;
-
-        if (needle->back_length > 0)
+        if (needle->back_length != 0)
         {
             p2.x = needle->pivot_x - needle->back_length * cos_val;
             p2.y = needle->pivot_y - needle->back_length * sin_val;
         }
         else
         {
+            // use original pivot
             p2.x = needle->pivot_x;
             p2.y = needle->pivot_y;
         }
 
-        line_dsc.p1.x = p1.x;
-        line_dsc.p1.y = p1.y;
+        line_dsc.p1.x = needle->pivot_x + needle->length * cos_val;
+        line_dsc.p1.y = needle->pivot_y + needle->length * sin_val;
 
         line_dsc.p2.x = p2.x;
         line_dsc.p2.y = p2.y;
-
-        printf("Line details - p1: (%d,%d), p2: (%d,%d), width: %d\n", 
-               line_dsc.p1.x, line_dsc.p1.y, line_dsc.p2.x, line_dsc.p2.y, line_dsc.width);
-
-        fflush(stdout);
 
         lv_draw_line(layer, &line_dsc);
     }

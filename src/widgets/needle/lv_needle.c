@@ -171,6 +171,21 @@ void lv_needle_set_segment(lv_obj_t * obj, bool segment)
     lv_obj_invalidate(obj);
 }
 
+void lv_needle_set_width(lv_obj_t * obj, lv_value_precise_t width)
+{
+    LV_ASSERT_OBJ(obj, MY_CLASS);
+    lv_needle_t * needle = (lv_needle_t *)obj;
+    lv_obj_set_style_line_width(obj, width, 0);
+    lv_obj_invalidate(obj);
+}
+
+lv_value_precise_t lv_needle_get_width(lv_obj_t * obj)
+{
+    LV_ASSERT_OBJ(obj, MY_CLASS);
+    lv_needle_t * needle = (lv_needle_t *)obj;
+    return lv_obj_get_style_line_width(obj, 0);
+}
+
 lv_value_precise_t lv_needle_get_pivot_x(lv_obj_t * obj)
 {
     LV_ASSERT_OBJ(obj, MY_CLASS);

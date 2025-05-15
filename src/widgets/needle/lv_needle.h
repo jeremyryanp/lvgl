@@ -112,11 +112,6 @@ void lv_needle_set_back_length(lv_obj_t * obj, lv_value_precise_t length);
  * @param width     width of the needle
  */
 void lv_needle_set_width(lv_obj_t * obj, lv_value_precise_t width);
- * Set the line_width of the needle
- * @param obj       pointer to a needle object
- * @param width     line_width of the needle
- */
-void lv_needle_set_line_width(lv_obj_t * obj, lv_value_precise_t width);
 
 /**
  * Set the color of the needle
@@ -220,7 +215,6 @@ lv_value_precise_t lv_needle_get_back_length(lv_obj_t * obj);
  * @return          width of the needle
  */
 lv_value_precise_t lv_needle_get_width(lv_obj_t * obj);
-lv_value_precise_t lv_needle_get_line_width(lv_obj_t * obj);
 
 /**
  * Get the color of the needle

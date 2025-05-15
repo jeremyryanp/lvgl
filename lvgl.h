@@ -69,6 +69,7 @@ extern "C" {
 #include "src/widgets/msgbox/lv_msgbox.h"
 #include "src/widgets/roller/lv_roller.h"
 #include "src/widgets/scale/lv_scale.h"
+#include "src/widgets/scale_section/lv_scale_section.h"
 #include "src/widgets/slider/lv_slider.h"
 #include "src/widgets/span/lv_span.h"
 #include "src/widgets/spinbox/lv_spinbox.h"

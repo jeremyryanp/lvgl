@@ -112,6 +112,11 @@ void lv_needle_set_back_length(lv_obj_t * obj, lv_value_precise_t length);
  * @param width     width of the needle
  */
 void lv_needle_set_width(lv_obj_t * obj, lv_value_precise_t width);
+ * Set the line_width of the needle
+ * @param obj       pointer to a needle object
+ * @param width     line_width of the needle
+ */
+void lv_needle_set_line_width(lv_obj_t * obj, lv_value_precise_t width);
 
 /**
  * Set the color of the needle
@@ -120,6 +125,41 @@ void lv_needle_set_width(lv_obj_t * obj, lv_value_precise_t width);
  */
 
 void lv_needle_set_color(lv_obj_t * obj, lv_color_t color);
+
+/**
+ * Set the end x coordinate of the needle
+ * @param obj       pointer to a needle object
+ * @param x         x coordinate of the end point
+ */
+void lv_needle_set_start_x(lv_obj_t * obj, lv_value_precise_t x); 
+
+/**
+ * Set the end y coordinate of the needle
+ * @param obj       pointer to a needle object
+ * @param y         y coordinate of the end point
+ */
+void lv_needle_set_start_y(lv_obj_t * obj, lv_value_precise_t y);     
+
+/**
+ * Set the end x coordinate of the needle
+ * @param obj       pointer to a needle object
+ * @param x         x coordinate of the end point
+ */
+void lv_needle_set_end_x(lv_obj_t * obj, lv_value_precise_t x); 
+
+/**
+ * Set the end y coordinate of the needle
+ * @param obj       pointer to a needle object
+ * @param y         y coordinate of the end point
+ */
+void lv_needle_set_end_y(lv_obj_t * obj, lv_value_precise_t y);     
+
+/**
+ * Set the segment of the needle
+ * @param obj       pointer to a needle object
+ * @param segment   segment of the needle
+ */
+void lv_needle_set_segment(lv_obj_t * obj, bool segment);
 
 /*=====================
  * Getter functions
@@ -180,6 +220,7 @@ lv_value_precise_t lv_needle_get_back_length(lv_obj_t * obj);
  * @return          width of the needle
  */
 lv_value_precise_t lv_needle_get_width(lv_obj_t * obj);
+lv_value_precise_t lv_needle_get_line_width(lv_obj_t * obj);
 
 /**
  * Get the color of the needle
@@ -187,6 +228,42 @@ lv_value_precise_t lv_needle_get_width(lv_obj_t * obj);
  * @return          color of the needle
  */
 lv_color_t lv_needle_get_color(lv_obj_t * obj);
+
+
+/**
+ * Get the start x coordinate of the needle
+ * @param obj       pointer to a needle object
+ * @return          x coordinate of the start point
+ */
+lv_value_precise_t lv_needle_get_start_x(lv_obj_t * obj);
+
+/**
+ * Get the start y coordinate of the needle
+ * @param obj       pointer to a needle object
+ * @return          y coordinate of the start point
+ */
+lv_value_precise_t lv_needle_get_start_y(lv_obj_t * obj);
+
+/**
+ * Get the end x coordinate of the needle
+ * @param obj       pointer to a needle object
+ * @return          x coordinate of the end point
+ */
+lv_value_precise_t lv_needle_get_end_x(lv_obj_t * obj);
+
+/**
+ * Get the end y coordinate of the needle
+ * @param obj       pointer to a needle object
+ * @return          y coordinate of the end point
+ */
+lv_value_precise_t lv_needle_get_end_y(lv_obj_t * obj); 
+
+/**
+ * Get the segment of the needle
+ * @param obj       pointer to a needle object
+ * @return          segment of the needle
+ */
+lv_value_precise_t lv_needle_get_segment(lv_obj_t * obj);
 
 /**********************
  *      MACROS

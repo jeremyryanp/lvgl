@@ -20,6 +20,7 @@ extern "C" {
 #include "../../core/lv_obj.h"
 #include "../line/lv_line.h"
 #include "../image/lv_image.h"
+#include "../canvas/lv_canvas.h"
 
 /*********************
  *      DEFINES
@@ -87,14 +88,14 @@ void lv_scale_set_mode(lv_obj_t * obj, lv_scale_mode_t mode);
  * @param obj       pointer the scale object
  * @param total_tick_count    New total tick count
  */
-void lv_scale_set_total_tick_count(lv_obj_t * obj, uint32_t total_tick_count);
+void lv_scale_set_total_tick_count(lv_obj_t * obj, int32_t total_tick_count);
 
 /**
  * Sets how often the major tick will be drawn
  * @param obj                 pointer the scale object
  * @param major_tick_every    the new count for major tick drawing
  */
-void lv_scale_set_major_tick_every(lv_obj_t * obj, uint32_t major_tick_every);
+void lv_scale_set_major_tick_every(lv_obj_t * obj, int32_t major_tick_every);
 
 /**
  * Sets label visibility
@@ -130,7 +131,7 @@ void lv_scale_set_range_max(lv_obj_t * obj, int32_t max);
  * @param obj           pointer to a scale object
  * @param angle_range   the angular range of the scale
  */
-void lv_scale_set_angle_range(lv_obj_t * obj, uint32_t angle_range);
+void lv_scale_set_angle_range(lv_obj_t * obj, int32_t angle_range);
 
 /**
  * Set properties specific to round scale
@@ -183,28 +184,13 @@ void lv_scale_set_post_draw(lv_obj_t * obj, bool en);
  */
 void lv_scale_set_draw_ticks_on_top(lv_obj_t * obj, bool en);
 
-/**
- * Add a section to the given scale
- * @param obj       pointer to a scale object
- * @return          pointer to the new section
- */
-lv_scale_section_t * lv_scale_add_section(lv_obj_t * obj);
+void lv_scale_set_first_tick_width(lv_obj_t * obj, int32_t width);
 
-/**
- * Set the range for the given scale section
- * @param section       pointer to a scale section object
- * @param minor_range   section new minor range
- * @param major_range   section new major range
- */
-void lv_scale_section_set_range(lv_scale_section_t * section, int32_t minor_range, int32_t major_range);
+void lv_scale_set_last_tick_width(lv_obj_t * obj, int32_t width);
 
-/**
- * Set the style of the part for the given scale section
- * @param section   pointer to a scale section object
- * @param part      the part for the section, e.g. LV_PART_INDICATOR
- * @param section_part_style Pointer to the section part style
- */
-void lv_scale_section_set_style(lv_scale_section_t * section, lv_part_t part, lv_style_t * section_part_style);
+void lv_scale_set_label_gap(lv_obj_t * obj, int32_t gap);
+
+void lv_scale_set_is_cached(lv_obj_t * obj, bool is_cached);
 
 /*=====================
  * Getter functions
@@ -243,7 +229,7 @@ bool lv_scale_get_label_show(lv_obj_t * obj);
  * @param obj   pointer to a scale object
  * @return      Scale angle_range
  */
-uint32_t lv_scale_get_angle_range(lv_obj_t * obj);
+int32_t lv_scale_get_angle_range(lv_obj_t * obj);
 
 /**
  * Get the min range for the given scale section
@@ -273,6 +259,34 @@ int32_t lv_scale_get_range_min(lv_obj_t * obj);
  */
 int32_t lv_scale_get_range_max(lv_obj_t * obj);
 
+/**
+ * Get the label gap for the given scale section
+ * @param obj   pointer to a scale section object
+ * @return      section label gap
+ */
+int32_t lv_scale_get_label_gap(lv_obj_t * obj);
+
+/**
+ * Get the first tick width for the given scale section
+ * @param obj   pointer to a scale section object
+ * @return      section first tick width
+ */
+int32_t lv_scale_get_first_tick_width(lv_obj_t * obj);
+
+/**
+ * Get the last tick width for the given scale section
+ * @param obj   pointer to a scale section object
+ * @return      section last tick width
+ */
+int32_t lv_scale_get_last_tick_width(lv_obj_t * obj);
+
+int32_t lv_scale_get_rotation(lv_obj_t * obj);
+
+bool lv_scale_get_post_draw(lv_obj_t * obj);
+
+bool lv_scale_get_draw_ticks_on_top(lv_obj_t * obj);
+
+bool lv_scale_get_is_cached(lv_obj_t * obj);
 /**********************
  *      MACROS
  **********************/

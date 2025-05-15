@@ -39,6 +39,10 @@ struct lv_needle_t {
     lv_value_precise_t value;        // Current value (0-100)
     lv_value_precise_t length;       // Length of the needle
     lv_value_precise_t back_length;  // Length of the back part of the needle
+
+    bool is_segment;
+    lv_value_precise_t end_x;
+    lv_value_precise_t end_y;
 };
 
 

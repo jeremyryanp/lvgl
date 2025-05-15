@@ -141,6 +141,36 @@ void lv_needle_set_value(lv_obj_t * obj, lv_value_precise_t value)
     lv_obj_invalidate(obj);
 }
 
+void lv_needle_set_start_x(lv_obj_t * obj, lv_value_precise_t x) { lv_needle_set_pivot_x(obj, x); }
+
+void lv_needle_set_start_y(lv_obj_t * obj, lv_value_precise_t y) { lv_needle_set_pivot_y(obj, y); }
+
+void lv_needle_set_end_x(lv_obj_t * obj, lv_value_precise_t x)
+{
+    LV_ASSERT_OBJ(obj, MY_CLASS);
+    lv_needle_t * needle = (lv_needle_t *)obj;
+    needle->end_x = x;
+    needle->is_segment = true;
+    lv_obj_invalidate(obj);
+}
+
+void lv_needle_set_end_y(lv_obj_t * obj, lv_value_precise_t y)
+{
+    LV_ASSERT_OBJ(obj, MY_CLASS);
+    lv_needle_t * needle = (lv_needle_t *)obj;
+    needle->end_y = y;
+    needle->is_segment = true;
+    lv_obj_invalidate(obj);
+}
+
+void lv_needle_set_segment(lv_obj_t * obj, bool segment)
+{
+    LV_ASSERT_OBJ(obj, MY_CLASS);
+    lv_needle_t * needle = (lv_needle_t *)obj;
+    needle->is_segment = segment;
+    lv_obj_invalidate(obj);
+}
+
 lv_value_precise_t lv_needle_get_pivot_x(lv_obj_t * obj)
 {
     LV_ASSERT_OBJ(obj, MY_CLASS);
@@ -195,6 +225,41 @@ lv_value_precise_t lv_needle_get_value(lv_obj_t * obj)
     LV_ASSERT_OBJ(obj, MY_CLASS);
     lv_needle_t * needle = (lv_needle_t *)obj;
     return needle->value;
+}
+
+lv_value_precise_t lv_needle_get_start_x(lv_obj_t * obj)
+{
+    LV_ASSERT_OBJ(obj, MY_CLASS);
+    lv_needle_t * needle = (lv_needle_t *)obj;
+    return needle->pivot_x;
+}
+
+lv_value_precise_t lv_needle_get_start_y(lv_obj_t * obj)
+{
+    LV_ASSERT_OBJ(obj, MY_CLASS);
+    lv_needle_t * needle = (lv_needle_t *)obj;
+    return needle->pivot_y;
+}
+
+lv_value_precise_t lv_needle_get_end_x(lv_obj_t * obj)
+{
+    LV_ASSERT_OBJ(obj, MY_CLASS);
+    lv_needle_t * needle = (lv_needle_t *)obj;
+    return needle->end_x;
+}
+
+lv_value_precise_t lv_needle_get_end_y(lv_obj_t * obj)
+{
+    LV_ASSERT_OBJ(obj, MY_CLASS);
+    lv_needle_t * needle = (lv_needle_t *)obj;
+    return needle->end_y;
+}
+
+lv_value_precise_t lv_needle_get_segment(lv_obj_t * obj)
+{
+    LV_ASSERT_OBJ(obj, MY_CLASS);
+    lv_needle_t * needle = (lv_needle_t *)obj;
+    return needle->is_segment;
 }
 
 /**********************
@@ -281,6 +346,49 @@ static void lv_needle_event(const lv_obj_class_t * class_p, lv_event_t * e)
 
         line_dsc.p2.x = p2.x;
         line_dsc.p2.y = p2.y;
+
+        if (needle->is_segment)
+        {
+            line_dsc.p1.x = needle->pivot_x;
+            line_dsc.p1.y = needle->pivot_y;
+
+            line_dsc.p2.x = needle->end_x;
+            line_dsc.p2.y = needle->end_y;
+        }
+        else
+        {
+            // Calculate needle points based on pivot, angle and length
+            lv_point_precise_t p2;
+
+            int32_t angle;
+            angle = lv_map(needle->value, 0, 100, (int32_t)needle->start_angle, (int32_t)needle->end_angle);
+
+            // Calculate current angle based on value range
+            lv_value_precise_t angle_range = needle->end_angle - needle->start_angle;
+            lv_value_precise_t current_angle = needle->start_angle + (needle->value * angle_range / 100);
+
+            // Convert lv_trigo_sin output to proper sin value (-1 to 1)
+            float sin_val = lv_trigo_sin(angle) / 32768.0;
+            float cos_val = lv_trigo_cos(angle) / 32768.0;
+
+            if (needle->back_length != 0)
+            {
+                p2.x = needle->pivot_x - needle->back_length * cos_val;
+                p2.y = needle->pivot_y - needle->back_length * sin_val;
+            }
+            else
+            {
+                // use original pivot
+                p2.x = needle->pivot_x;
+                p2.y = needle->pivot_y;
+            }
+
+            line_dsc.p1.x = needle->pivot_x + needle->length * cos_val;
+            line_dsc.p1.y = needle->pivot_y + needle->length * sin_val;
+
+            line_dsc.p2.x = p2.x;
+            line_dsc.p2.y = p2.y;
+        }
 
         lv_draw_line(layer, &line_dsc);
     }

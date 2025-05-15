@@ -84,8 +84,50 @@ typedef enum {
     LV_FONT_KERNING_NONE,
 } lv_font_kerning_t;
 
+
+struct _lv_font_class_t {
+    lv_font_t * (*create_cb)(const lv_font_info_t * info, const void * src); /**< Font creation callback function*/
+    void (*delete_cb)(lv_font_t * font);    /**< Font deletion callback function*/
+    void * (*dup_src_cb)(const void * src); /**< Font source duplication callback function*/
+    void (*free_src_cb)(void * src);        /**< Font source free callback function*/
+};
+
+struct _lv_font_info_t {
+    const char * name;               /**< Font name, used to distinguish different font resources*/
+    const lv_font_class_t * class_p; /**< Font backend implementation*/
+    uint32_t size;                   /**< Font size in pixel*/
+    uint32_t render_mode;            /**< Font rendering mode, see `lv_freetype_font_render_mode_t`*/
+    uint32_t style;                  /**< Font style, see `lv_freetype_font_style_t`*/
+    lv_font_kerning_t kerning;       /**< Font kerning, see `lv_font_kerning_t`*/
+};
+
 /** Describe the properties of a font*/
-struct lv_font_t {
+// struct lv_font_t {
+//     /** Get a glyph's descriptor from a font*/
+//     bool (*get_glyph_dsc)(const lv_font_t *, lv_font_glyph_dsc_t *, uint32_t letter, uint32_t letter_next);
+
+//     /** Get a glyph's bitmap from a font*/
+//     const void * (*get_glyph_bitmap)(lv_font_glyph_dsc_t *, lv_draw_buf_t *);
+
+//     /** Release a glyph*/
+//     void (*release_glyph)(const lv_font_t *, lv_font_glyph_dsc_t *);
+
+//     /*Pointer to the font in a font pack (must have the same line height)*/
+//     int32_t line_height;         /**< The real line height where any text fits*/
+//     int32_t base_line;           /**< Base line measured from the bottom of the line_height*/
+//     uint8_t subpx   : 2;            /**< An element of `lv_font_subpx_t`*/
+//     uint8_t kerning : 1;            /**< An element of `lv_font_kerning_t`*/
+
+//     int8_t underline_position;      /**< Distance between the top of the underline and base line (< 0 means below the base line)*/
+//     int8_t underline_thickness;     /**< Thickness of the underline*/
+
+//     const void * dsc;               /**< Store implementation specific or run_time data or caching here*/
+//     const lv_font_t * fallback;   /**< Fallback font for missing glyph. Resolved recursively */
+//     void * user_data;               /**< Custom user data for font.*/
+// };
+
+/** Describe the properties of a font*/
+struct _lv_font_t {
     /** Get a glyph's descriptor from a font*/
     bool (*get_glyph_dsc)(const lv_font_t *, lv_font_glyph_dsc_t *, uint32_t letter, uint32_t letter_next);
 

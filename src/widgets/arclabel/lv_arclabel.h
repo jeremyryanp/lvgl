@@ -17,6 +17,8 @@ extern "C" {
 
 #if LV_USE_ARCLABEL != 0
 
+#include "../../core/lv_obj.h"
+
 /*********************
  *      DEFINES
  *********************/

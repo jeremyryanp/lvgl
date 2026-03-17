@@ -60,17 +60,19 @@ typedef enum {
 
 #if LV_USE_OBJ_PROPERTY
 enum _lv_property_image_id_t {
-    LV_PROPERTY_ID(IMAGE, SRC,          LV_PROPERTY_TYPE_IMGSRC,    0),
-    LV_PROPERTY_ID(IMAGE, OFFSET_X,     LV_PROPERTY_TYPE_INT,       1),
-    LV_PROPERTY_ID(IMAGE, OFFSET_Y,     LV_PROPERTY_TYPE_INT,       2),
-    LV_PROPERTY_ID(IMAGE, ROTATION,     LV_PROPERTY_TYPE_INT,       3),
-    LV_PROPERTY_ID(IMAGE, PIVOT,        LV_PROPERTY_TYPE_POINT,     4),
-    LV_PROPERTY_ID(IMAGE, SCALE,        LV_PROPERTY_TYPE_INT,       5),
-    LV_PROPERTY_ID(IMAGE, SCALE_X,      LV_PROPERTY_TYPE_INT,       6),
-    LV_PROPERTY_ID(IMAGE, SCALE_Y,      LV_PROPERTY_TYPE_INT,       7),
-    LV_PROPERTY_ID(IMAGE, BLEND_MODE,   LV_PROPERTY_TYPE_INT,       8),
-    LV_PROPERTY_ID(IMAGE, ANTIALIAS,    LV_PROPERTY_TYPE_INT,       9),
-    LV_PROPERTY_ID(IMAGE, INNER_ALIGN,  LV_PROPERTY_TYPE_INT,       10),
+    LV_PROPERTY_ID(IMAGE, ANTIALIAS,          LV_PROPERTY_TYPE_BOOL, 0),
+    LV_PROPERTY_ID(IMAGE, OFFSET_X,           LV_PROPERTY_TYPE_INT,  1),
+    LV_PROPERTY_ID(IMAGE, OFFSET_Y,           LV_PROPERTY_TYPE_INT,  2),
+    LV_PROPERTY_ID(IMAGE, PIVOT_X,            LV_PROPERTY_TYPE_INT,  3),
+    LV_PROPERTY_ID(IMAGE, PIVOT_Y,            LV_PROPERTY_TYPE_INT,  4),
+    LV_PROPERTY_ID(IMAGE, ROTATION,           LV_PROPERTY_TYPE_INT,  5),
+    LV_PROPERTY_ID(IMAGE, SCALE,              LV_PROPERTY_TYPE_INT,  6),
+    LV_PROPERTY_ID(IMAGE, SCALE_X,            LV_PROPERTY_TYPE_INT,  7),
+    LV_PROPERTY_ID(IMAGE, SCALE_Y,            LV_PROPERTY_TYPE_INT,  8),
+    LV_PROPERTY_ID(IMAGE, SRC_HEIGHT,         LV_PROPERTY_TYPE_INT,  9),
+    LV_PROPERTY_ID(IMAGE, SRC_WIDTH,          LV_PROPERTY_TYPE_INT,  10),
+    LV_PROPERTY_ID(IMAGE, TRANSFORMED_HEIGHT, LV_PROPERTY_TYPE_INT,  11),
+    LV_PROPERTY_ID(IMAGE, TRANSFORMED_WIDTH,  LV_PROPERTY_TYPE_INT,  12),
     LV_PROPERTY_IMAGE_END,
 };
 #endif
@@ -220,6 +222,21 @@ void lv_image_set_inner_align(lv_obj_t * obj, lv_image_align_t align);
  */
 void lv_image_set_bitmap_map_src(lv_obj_t * obj, const lv_image_dsc_t * src);
 
+/**
+ * Set an offset for the source of an image so the image will be displayed from the new origin.
+ * @param obj       pointer to an image
+ * @param x         the new offset along x axis.
+ */
+void lv_image_set_pivot_x(lv_obj_t * obj, int32_t x);
+
+/**
+ * Set an offset for the source of an image.
+ * so the image will be displayed from the new origin.
+ * @param obj       pointer to an image
+ * @param y         the new offset along y axis.
+ */
+void lv_image_set_pivot_y(lv_obj_t * obj, int32_t y);
+
 /*=====================
  * Getter functions
  *====================*/
@@ -349,6 +366,20 @@ const lv_image_dsc_t * lv_image_get_bitmap_map_src(lv_obj_t * obj);
  */
 lv_observer_t * lv_image_bind_src(lv_obj_t * obj, lv_subject_t * subject);
 #endif
+
+/**
+ * Get the pivot's x attribute of the image object.
+ * @param obj       pointer to an image
+ * @return          pivot X value.
+ */
+int32_t lv_image_get_pivot_x(lv_obj_t * obj);
+
+/**
+ * Get the pivot's y attribute of the image object.
+ * @param obj       pointer to an image
+ * @return          pivot Y value.
+ */
+int32_t lv_image_get_pivot_y(lv_obj_t * obj);
 
 /**********************
  *      MACROS

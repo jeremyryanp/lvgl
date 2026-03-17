@@ -68,14 +68,20 @@ LV_ATTRIBUTE_EXTERN_DATA extern const lv_obj_class_t lv_scale_class;
 
 #if LV_USE_OBJ_PROPERTY
 enum _lv_property_scale_id_t {
-    LV_PROPERTY_ID(SCALE, MODE,               LV_PROPERTY_TYPE_INT,   0),
-    LV_PROPERTY_ID(SCALE, TOTAL_TICK_COUNT,   LV_PROPERTY_TYPE_INT,   1),
-    LV_PROPERTY_ID(SCALE, MAJOR_TICK_EVERY,   LV_PROPERTY_TYPE_INT,   2),
-    LV_PROPERTY_ID(SCALE, LABEL_SHOW,         LV_PROPERTY_TYPE_BOOL,  3),
-    LV_PROPERTY_ID(SCALE, ANGLE_RANGE,        LV_PROPERTY_TYPE_INT,   4),
-    LV_PROPERTY_ID(SCALE, ROTATION,           LV_PROPERTY_TYPE_INT,   5),
-    LV_PROPERTY_ID(SCALE, RANGE_MIN_VALUE,    LV_PROPERTY_TYPE_INT,   6),
-    LV_PROPERTY_ID(SCALE, RANGE_MAX_VALUE,    LV_PROPERTY_TYPE_INT,   7),
+    LV_PROPERTY_ID(SCALE, DRAW_TICKS_ON_TOP, LV_PROPERTY_TYPE_BOOL, 0),
+    LV_PROPERTY_ID(SCALE, FIRST_TICK_WIDTH,  LV_PROPERTY_TYPE_INT,  1),
+    LV_PROPERTY_ID(SCALE, IS_CACHED,         LV_PROPERTY_TYPE_BOOL, 2),
+    LV_PROPERTY_ID(SCALE, LABEL_GAP,         LV_PROPERTY_TYPE_INT,  3),
+    LV_PROPERTY_ID(SCALE, LABEL_SHOW,        LV_PROPERTY_TYPE_BOOL, 4),
+    LV_PROPERTY_ID(SCALE, LAST_TICK_WIDTH,   LV_PROPERTY_TYPE_INT,  5),
+    LV_PROPERTY_ID(SCALE, MAJOR_TICK_EVERY,  LV_PROPERTY_TYPE_INT,  6),
+    LV_PROPERTY_ID(SCALE, POST_DRAW,         LV_PROPERTY_TYPE_BOOL, 7),
+    LV_PROPERTY_ID(SCALE, RANGE_MAX,         LV_PROPERTY_TYPE_INT,  8),
+    LV_PROPERTY_ID(SCALE, RANGE_MAX_VALUE,   LV_PROPERTY_TYPE_INT,  9),
+    LV_PROPERTY_ID(SCALE, RANGE_MIN,         LV_PROPERTY_TYPE_INT,  10),
+    LV_PROPERTY_ID(SCALE, RANGE_MIN_VALUE,   LV_PROPERTY_TYPE_INT,  11),
+    LV_PROPERTY_ID(SCALE, ROTATION,          LV_PROPERTY_TYPE_INT,  12),
+    LV_PROPERTY_ID(SCALE, TOTAL_TICK_COUNT,  LV_PROPERTY_TYPE_INT,  13),
     LV_PROPERTY_SCALE_END,
 };
 #endif
@@ -134,6 +140,20 @@ void lv_scale_set_label_show(lv_obj_t * obj, bool show_label);
  * @param max       maximum value of Scale
  */
 void lv_scale_set_range(lv_obj_t * obj, int32_t min, int32_t max);
+
+/**
+ * Compatibility wrapper for setting the minimum range value.
+ * @param obj       pointer to Scale Widget.
+ * @param min       minimum value of Scale.
+ */
+void lv_scale_set_range_min(lv_obj_t * obj, int32_t min);
+
+/**
+ * Compatibility wrapper for setting the maximum range value.
+ * @param obj       pointer to Scale Widget.
+ * @param max       maximum value of Scale.
+ */
+void lv_scale_set_range_max(lv_obj_t * obj, int32_t max);
 
 /**
  * Set minimum values on Scale.
@@ -223,6 +243,11 @@ void lv_scale_set_post_draw(lv_obj_t * obj, bool en);
  * @param en        true: enable draw ticks on top of all parts
  */
 void lv_scale_set_draw_ticks_on_top(lv_obj_t * obj, bool en);
+
+void lv_scale_set_first_tick_width(lv_obj_t * obj, int32_t width);
+void lv_scale_set_last_tick_width(lv_obj_t * obj, int32_t width);
+void lv_scale_set_label_gap(lv_obj_t * obj, int32_t gap);
+void lv_scale_set_is_cached(lv_obj_t * obj, bool is_cached);
 
 /**
  * Add a Section to specified Scale.  Section will not be drawn until
@@ -358,6 +383,15 @@ int32_t lv_scale_get_range_min_value(lv_obj_t * obj);
  * @return      Scale's maximum value
  */
 int32_t lv_scale_get_range_max_value(lv_obj_t * obj);
+
+int32_t lv_scale_get_range_min(lv_obj_t * obj);
+int32_t lv_scale_get_range_max(lv_obj_t * obj);
+int32_t lv_scale_get_label_gap(lv_obj_t * obj);
+int32_t lv_scale_get_first_tick_width(lv_obj_t * obj);
+int32_t lv_scale_get_last_tick_width(lv_obj_t * obj);
+bool lv_scale_get_post_draw(lv_obj_t * obj);
+bool lv_scale_get_draw_ticks_on_top(lv_obj_t * obj);
+bool lv_scale_get_is_cached(lv_obj_t * obj);
 
 /*=====================
  * Other functions

@@ -53,6 +53,13 @@ void lv_ll_init(lv_ll_t * ll_p, uint32_t node_size);
 void * lv_ll_ins_head(lv_ll_t * ll_p);
 
 /**
+ * Add a new head to a linked list
+ * @param ll_p pointer to linked list
+ * @return pointer to the new head
+ */
+void * lv_ll_set_head(lv_ll_t * ll_p, lv_ll_node_t * n_new);
+
+/**
  * Insert a new node in front of the n_act node
  * @param ll_p pointer to linked list
  * @param n_act pointer a node

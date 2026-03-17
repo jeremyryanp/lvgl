@@ -85,6 +85,7 @@ extern "C" {
 #include "src/widgets/win/lv_win_private.h"
 #include "src/widgets/keyboard/lv_keyboard_private.h"
 #include "src/widgets/line/lv_line_private.h"
+#include "src/widgets/needle/lv_needle_private.h"
 #include "src/widgets/animimage/lv_animimage_private.h"
 #include "src/widgets/dropdown/lv_dropdown_private.h"
 #include "src/widgets/menu/lv_menu_private.h"

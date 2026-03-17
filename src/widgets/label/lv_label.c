@@ -96,6 +96,22 @@ static const lv_property_ops_t lv_label_properties[] = {
 };
 #endif
 
+// SCRIPT INSERT START
+#if LV_USE_OBJ_PROPERTY
+static const lv_property_ops_t properties[] = {
+    {
+        .id = LV_PROPERTY_LABEL_RECOLOR,
+        .setter = lv_label_set_recolor,
+        .getter = lv_label_get_recolor,
+    },
+    {
+        .id = LV_PROPERTY_LABEL_TEXT,
+        .setter = lv_label_set_text,
+        .getter = lv_label_get_text,
+    },
+};
+#endif
+// SCRIPT INSERT END
 const lv_obj_class_t lv_label_class = {
     .constructor_cb = lv_label_constructor,
     .destructor_cb = lv_label_destructor,
@@ -105,6 +121,18 @@ const lv_obj_class_t lv_label_class = {
     .instance_size = sizeof(lv_label_t),
     .base_class = &lv_obj_class,
     .name = "lv_label",
+// SCRIPT INSERT START
+#if LV_USE_OBJ_PROPERTY
+    .prop_index_start = LV_PROPERTY_LABEL_START,
+    .prop_index_end = LV_PROPERTY_LABEL_END,
+    .properties = properties,
+    .properties_count = sizeof(properties) / sizeof(properties[0]),
+#if LV_USE_OBJ_PROPERTY_NAME
+    .property_names = lv_label_property_names,
+    .names_count = sizeof(lv_label_property_names) / sizeof(lv_property_name_t),
+#endif
+#endif
+// SCRIPT INSERT END
     LV_PROPERTY_CLASS_FIELDS(label, LABEL)
 };
 

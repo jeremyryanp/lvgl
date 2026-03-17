@@ -77,6 +77,25 @@ void * lv_ll_ins_head(lv_ll_t * ll_p)
     return n_new;
 }
 
+void * lv_ll_set_head(lv_ll_t * ll_p, lv_ll_node_t * n_new)
+{
+    if(n_new != NULL) {
+        node_set_prev(ll_p, n_new, NULL);       /*No prev. before the new head*/
+        node_set_next(ll_p, n_new, ll_p->head); /*After new comes the old head*/
+
+        if(ll_p->head != NULL) { /*If there is old head then before it goes the new*/
+            node_set_prev(ll_p, ll_p->head, n_new);
+        }
+
+        ll_p->head = n_new;      /*Set the new head in the dsc.*/
+        if(ll_p->tail == NULL) { /*If there is no tail (1. node) set the tail too*/
+            ll_p->tail = n_new;
+        }
+    }
+
+    return n_new;
+}
+
 void * lv_ll_ins_prev(lv_ll_t * ll_p, void * n_act)
 {
     lv_ll_node_t * n_new;

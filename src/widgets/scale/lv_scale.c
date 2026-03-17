@@ -6,6 +6,7 @@
 /*********************
  *      INCLUDES
  *********************/
+#include "../scale_section/lv_scale_section_private.h"
 #include "lv_scale_private.h"
 #include "../../core/lv_obj_private.h"
 #include "../../core/lv_obj_class_private.h"
@@ -128,6 +129,82 @@ static const lv_property_ops_t lv_scale_properties[] = {
 };
 #endif
 
+// SCRIPT INSERT START
+#if LV_USE_OBJ_PROPERTY
+static const lv_property_ops_t properties[] = {
+    {
+        .id = LV_PROPERTY_SCALE_DRAW_TICKS_ON_TOP,
+        .setter = lv_scale_set_draw_ticks_on_top,
+        .getter = lv_scale_get_draw_ticks_on_top,
+    },
+    {
+        .id = LV_PROPERTY_SCALE_FIRST_TICK_WIDTH,
+        .setter = lv_scale_set_first_tick_width,
+        .getter = lv_scale_get_first_tick_width,
+    },
+    {
+        .id = LV_PROPERTY_SCALE_IS_CACHED,
+        .setter = lv_scale_set_is_cached,
+        .getter = lv_scale_get_is_cached,
+    },
+    {
+        .id = LV_PROPERTY_SCALE_LABEL_GAP,
+        .setter = lv_scale_set_label_gap,
+        .getter = lv_scale_get_label_gap,
+    },
+    {
+        .id = LV_PROPERTY_SCALE_LABEL_SHOW,
+        .setter = lv_scale_set_label_show,
+        .getter = lv_scale_get_label_show,
+    },
+    {
+        .id = LV_PROPERTY_SCALE_LAST_TICK_WIDTH,
+        .setter = lv_scale_set_last_tick_width,
+        .getter = lv_scale_get_last_tick_width,
+    },
+    {
+        .id = LV_PROPERTY_SCALE_MAJOR_TICK_EVERY,
+        .setter = lv_scale_set_major_tick_every,
+        .getter = lv_scale_get_major_tick_every,
+    },
+    {
+        .id = LV_PROPERTY_SCALE_POST_DRAW,
+        .setter = lv_scale_set_post_draw,
+        .getter = lv_scale_get_post_draw,
+    },
+    {
+        .id = LV_PROPERTY_SCALE_RANGE_MAX,
+        .setter = lv_scale_set_range_max,
+        .getter = lv_scale_get_range_max,
+    },
+    {
+        .id = LV_PROPERTY_SCALE_RANGE_MAX_VALUE,
+        .setter = lv_prop_set_empty,
+        .getter = lv_scale_get_range_max_value,
+    },
+    {
+        .id = LV_PROPERTY_SCALE_RANGE_MIN,
+        .setter = lv_scale_set_range_min,
+        .getter = lv_scale_get_range_min,
+    },
+    {
+        .id = LV_PROPERTY_SCALE_RANGE_MIN_VALUE,
+        .setter = lv_prop_set_empty,
+        .getter = lv_scale_get_range_min_value,
+    },
+    {
+        .id = LV_PROPERTY_SCALE_ROTATION,
+        .setter = lv_scale_set_rotation,
+        .getter = lv_scale_get_rotation,
+    },
+    {
+        .id = LV_PROPERTY_SCALE_TOTAL_TICK_COUNT,
+        .setter = lv_scale_set_total_tick_count,
+        .getter = lv_scale_get_total_tick_count,
+    },
+};
+#endif
+// SCRIPT INSERT END
 const lv_obj_class_t lv_scale_class  = {
     .constructor_cb = lv_scale_constructor,
     .destructor_cb = lv_scale_destructor,
@@ -135,7 +212,19 @@ const lv_obj_class_t lv_scale_class  = {
     .instance_size = sizeof(lv_scale_t),
     .editable = LV_OBJ_CLASS_EDITABLE_TRUE,
     .base_class = &lv_obj_class,
-    .name = "lv_scale",
+    .name = "scale",
+// SCRIPT INSERT START
+#if LV_USE_OBJ_PROPERTY
+    .prop_index_start = LV_PROPERTY_SCALE_START,
+    .prop_index_end = LV_PROPERTY_SCALE_END,
+    .properties = properties,
+    .properties_count = sizeof(properties) / sizeof(properties[0]),
+#if LV_USE_OBJ_PROPERTY_NAME
+    .property_names = lv_scale_property_names,
+    .names_count = sizeof(lv_scale_property_names) / sizeof(lv_property_name_t),
+#endif
+#endif
+// SCRIPT INSERT END
     LV_PROPERTY_CLASS_FIELDS(scale, SCALE)
 };
 
@@ -162,6 +251,7 @@ lv_obj_t * lv_scale_create(lv_obj_t * parent)
 /*
  * New object specific "add" or "remove" functions come here
  */
+
 
 /*=====================
  * Setter functions
@@ -216,6 +306,16 @@ void lv_scale_set_range(lv_obj_t * obj, int32_t min, int32_t max)
     scale->range_max = max;
 
     lv_obj_invalidate(obj);
+}
+
+void lv_scale_set_range_min(lv_obj_t * obj, int32_t min)
+{
+    lv_scale_set_min_value(obj, min);
+}
+
+void lv_scale_set_range_max(lv_obj_t * obj, int32_t max)
+{
+    lv_scale_set_max_value(obj, max);
 }
 
 void lv_scale_set_min_value(lv_obj_t * obj, int32_t min)
@@ -411,112 +511,36 @@ void lv_scale_set_draw_ticks_on_top(lv_obj_t * obj, bool en)
     lv_obj_invalidate(obj);
 }
 
-lv_scale_section_t * lv_scale_add_section(lv_obj_t * obj)
+
+void lv_scale_set_first_tick_width(lv_obj_t * obj, int32_t width)
 {
     LV_ASSERT_OBJ(obj, MY_CLASS);
-
     lv_scale_t * scale = (lv_scale_t *)obj;
-    lv_scale_section_t * section = lv_ll_ins_head(&scale->section_ll);
-    LV_ASSERT_MALLOC(section);
-    if(section == NULL) return NULL;
-
-    /* Section default values */
-    lv_memzero(section, sizeof(lv_scale_section_t));
-    section->first_tick_idx_in_section = LV_SCALE_TICK_IDX_DEFAULT_ID;
-    section->last_tick_idx_in_section = LV_SCALE_TICK_IDX_DEFAULT_ID;
-    /* Initial range is [0..-1] to make it "neutral" (i.e. will not be drawn until user
-     * sets a different range).  `range_min` is already 0 from `lv_memzero()` above. */
-    section->range_max = -1;
-
-    return section;
+    scale->first_tick_width = width;
+    lv_obj_invalidate(obj);
 }
 
-
-void lv_scale_set_section_range(lv_obj_t * scale, lv_scale_section_t * section, int32_t min, int32_t max)
+void lv_scale_set_last_tick_width(lv_obj_t * obj, int32_t width)
 {
-    LV_ASSERT_OBJ(scale, MY_CLASS);
-    LV_ASSERT_NULL(section);
-
-    lv_scale_set_section_min_value(scale, section, min);
-    lv_scale_set_section_max_value(scale, section, max);
+    LV_ASSERT_OBJ(obj, MY_CLASS);
+    lv_scale_t * scale = (lv_scale_t *)obj;
+    scale->last_tick_width = width;
+    lv_obj_invalidate(obj);
 }
 
-void lv_scale_set_section_min_value(lv_obj_t * scale, lv_scale_section_t * section, int32_t min)
+void lv_scale_set_label_gap(lv_obj_t * obj, int32_t gap)
 {
-    LV_ASSERT_OBJ(scale, MY_CLASS);
-    LV_ASSERT_NULL(section);
-
-    if(section->range_min == min) return;
-    section->range_min = min;
-    lv_obj_invalidate(scale);
+    LV_ASSERT_OBJ(obj, MY_CLASS);
+    lv_scale_t * scale = (lv_scale_t *)obj;
+    scale->label_gap = gap;
+    lv_obj_invalidate(obj);
 }
 
-void lv_scale_set_section_max_value(lv_obj_t * scale, lv_scale_section_t * section, int32_t max)
+void lv_scale_set_is_cached(lv_obj_t * obj, bool is_cached)
 {
-    LV_ASSERT_OBJ(scale, MY_CLASS);
-    LV_ASSERT_NULL(section);
-
-    if(section->range_max == max) return;
-    section->range_max = max;
-    lv_obj_invalidate(scale);
-}
-
-void lv_scale_section_set_range(lv_scale_section_t * section, int32_t min, int32_t max)
-{
-    if(NULL == section) return;
-
-    section->range_min = min;
-    section->range_max = max;
-}
-
-
-void lv_scale_set_section_style_main(lv_obj_t * scale, lv_scale_section_t * section, const lv_style_t * style)
-{
-    LV_ASSERT_OBJ(scale, MY_CLASS);
-    LV_ASSERT_NULL(section);
-
-    section->main_style = style;
-    lv_obj_invalidate(scale);
-}
-
-void lv_scale_set_section_style_indicator(lv_obj_t * scale, lv_scale_section_t * section, const lv_style_t * style)
-{
-    LV_ASSERT_OBJ(scale, MY_CLASS);
-    LV_ASSERT_NULL(section);
-
-    section->indicator_style = style;
-    lv_obj_invalidate(scale);
-}
-
-void lv_scale_set_section_style_items(lv_obj_t * scale, lv_scale_section_t * section, const lv_style_t * style)
-{
-    LV_ASSERT_OBJ(scale, MY_CLASS);
-    LV_ASSERT_NULL(section);
-
-    section->items_style = style;
-    lv_obj_invalidate(scale);
-}
-
-void lv_scale_section_set_style(lv_scale_section_t * section, lv_part_t part, lv_style_t * section_part_style)
-{
-    LV_LOG_WARN("Deprecated, use lv_scale_set_section_style_main/indicator/items instead");
-
-    if(NULL == section) return;
-
-    switch(part) {
-        case LV_PART_MAIN:
-            section->main_style = section_part_style;
-            break;
-        case LV_PART_INDICATOR:
-            section->indicator_style = section_part_style;
-            break;
-        case LV_PART_ITEMS:
-            section->items_style = section_part_style;
-            break;
-        default:
-            /* Invalid part */
-            break;
-    }
+    LV_ASSERT_OBJ(obj, MY_CLASS);
+    lv_scale_t * scale = (lv_scale_t *)obj;
+    scale->is_cached = is_cached;
 }
 
 /*=====================
@@ -569,6 +593,53 @@ int32_t lv_scale_get_range_max_value(lv_obj_t * obj)
 {
     lv_scale_t * scale = (lv_scale_t *)obj;
     return scale->range_max;
+}
+
+
+int32_t lv_scale_get_range_min(lv_obj_t * obj)
+{
+    return lv_scale_get_range_min_value(obj);
+}
+
+int32_t lv_scale_get_range_max(lv_obj_t * obj)
+{
+    return lv_scale_get_range_max_value(obj);
+}
+
+int32_t lv_scale_get_label_gap(lv_obj_t * obj)
+{
+    lv_scale_t * scale = (lv_scale_t *)obj;
+    return scale->label_gap;
+}
+
+int32_t lv_scale_get_first_tick_width(lv_obj_t * obj)
+{
+    lv_scale_t * scale = (lv_scale_t *)obj;
+    return scale->first_tick_width;
+}
+
+int32_t lv_scale_get_last_tick_width(lv_obj_t * obj)
+{
+    lv_scale_t * scale = (lv_scale_t *)obj;
+    return scale->last_tick_width;
+}
+
+bool lv_scale_get_post_draw(lv_obj_t * obj)
+{
+    lv_scale_t * scale = (lv_scale_t *)obj;
+    return scale->post_draw;
+}
+
+bool lv_scale_get_draw_ticks_on_top(lv_obj_t * obj)
+{
+    lv_scale_t * scale = (lv_scale_t *)obj;
+    return scale->draw_ticks_on_top;
+}
+
+bool lv_scale_get_is_cached(lv_obj_t * obj)
+{
+    lv_scale_t * scale = (lv_scale_t *)obj;
+    return scale->is_cached;
 }
 
 /*=====================
@@ -638,6 +709,8 @@ static void lv_scale_constructor(const lv_obj_class_t * class_p, lv_obj_t * obj)
     scale->draw_ticks_on_top = false;
     scale->custom_label_cnt = 0;
     scale->txt_src = NULL;
+    scale->label_gap = LV_SCALE_DEFAULT_LABEL_GAP;
+    scale->is_cached = false;
     lv_array_init(&scale->needles, 0, sizeof(lv_scale_needle_t));
 
     lv_obj_remove_flag(obj, LV_OBJ_FLAG_SCROLLABLE);
@@ -868,7 +941,7 @@ static void scale_draw_label(lv_obj_t * obj, lv_event_t * event, lv_draw_label_d
     }
     else if(LV_SCALE_MODE_ROUND_OUTER == scale->mode || LV_SCALE_MODE_ROUND_INNER == scale->mode) {
         translate_rotation = lv_obj_get_style_translate_radial(obj, LV_PART_INDICATOR);
-        uint32_t label_gap = lv_obj_get_style_pad_radial(obj, LV_PART_INDICATOR) + LV_SCALE_DEFAULT_LABEL_GAP;
+        uint32_t label_gap = lv_obj_get_style_pad_radial(obj, LV_PART_INDICATOR) + scale->label_gap;
 
         lv_area_t scale_area;
         lv_obj_get_content_coords(obj, &scale_area);
@@ -1630,6 +1703,16 @@ static void scale_find_section_tick_idx(lv_obj_t * obj)
     const int32_t max_out = scale->range_max;
     const uint32_t total_tick_count = scale->total_tick_count;
 
+    lv_scale_section_t * section;
+    LV_LL_READ_BACK(&scale->section_ll, section) {
+        section->first_tick_idx_in_section = LV_SCALE_TICK_IDX_DEFAULT_ID;
+        section->last_tick_idx_in_section = LV_SCALE_TICK_IDX_DEFAULT_ID;
+        section->first_tick_idx_is_major = 0;
+        section->last_tick_idx_is_major = 0;
+        section->first_tick_in_section_width = 0;
+        section->last_tick_in_section_width = 0;
+    }
+
     /* Section handling */
     uint32_t tick_idx = 0;
     for(tick_idx = 0; tick_idx < total_tick_count; tick_idx++) {
@@ -1637,7 +1720,6 @@ static void scale_find_section_tick_idx(lv_obj_t * obj)
 
         const int32_t tick_value = lv_map(tick_idx, 0, total_tick_count - 1, min_out, max_out);
 
-        lv_scale_section_t * section;
         LV_LL_READ_BACK(&scale->section_ll, section) {
             if(section->range_min <= tick_value && section->range_max >= tick_value) {
                 if(LV_SCALE_TICK_IDX_DEFAULT_ID == section->first_tick_idx_in_section) {
@@ -1891,3 +1973,8 @@ static void scale_section_max_value_observer_cb(lv_observer_t * observer, lv_sub
 
 
 #endif
+
+
+
+
+

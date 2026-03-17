@@ -28,7 +28,7 @@ extern "C" {
  **********************/
 
 /** Data of line */
-struct lv_needle_t {
+struct _lv_needle_t {
     lv_obj_t obj;
 
     lv_value_precise_t pivot_x;

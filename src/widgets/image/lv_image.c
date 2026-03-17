@@ -616,6 +616,20 @@ void lv_image_get_pivot(lv_obj_t * obj, lv_point_t * pivot)
     pivot->y = lv_pct_to_px(img->pivot.y, img->h);
 }
 
+int32_t lv_image_get_pivot_x(lv_obj_t * obj)
+{
+    lv_point_t pivot;
+    lv_image_get_pivot(obj, &pivot);
+    return pivot.x;
+}
+
+int32_t lv_image_get_pivot_y(lv_obj_t * obj)
+{
+    lv_point_t pivot;
+    lv_image_get_pivot(obj, &pivot);
+    return pivot.y;
+}
+
 int32_t lv_image_get_scale(lv_obj_t * obj)
 {
     LV_ASSERT_OBJ(obj, MY_CLASS);

@@ -12,16 +12,15 @@
 #if LV_USE_NEEDLE != 0
 #include "../../draw/lv_draw.h"
 #include "../../misc/lv_assert.h"
+#include "../../misc/lv_area.h"
+#include "../../misc/lv_area_private.h"
 #include "../../misc/lv_math.h"
-#include "../../misc/lv_math.h" // For LV_PI constant
 #include "../../misc/lv_types.h"
-#include <stdio.h>
 
 /*********************
  *      DEFINES
  *********************/
 #define MY_CLASS (&lv_needle_class)
-#define LV_PI 3.14159265358979323846f
 /**********************
  *      TYPEDEFS
  **********************/
@@ -34,15 +33,23 @@ static void lv_needle_constructor(const lv_obj_class_t * class_p, lv_obj_t * obj
 static void lv_needle_destructor(const lv_obj_class_t * class_p, lv_obj_t * obj);
 static void lv_needle_event(const lv_obj_class_t * class_p, lv_event_t * e);
 static void lv_needle_get_points(const lv_needle_t * needle, lv_point_precise_t * p1, lv_point_precise_t * p2);
+static void lv_needle_get_current_area(const lv_obj_t * obj, const lv_needle_t * needle, lv_area_t * area);
+static void lv_needle_get_geometry_area(const lv_obj_t * obj, const lv_needle_t * needle, lv_area_t * area);
+static void lv_needle_invalidate_area(lv_obj_t * obj, const lv_area_t * area);
+static void lv_needle_refresh_value(lv_obj_t * obj);
 static void lv_needle_refresh_geometry(lv_obj_t * obj);
+static lv_value_precise_t lv_needle_map_value_to_angle(const lv_needle_t * needle);
+static int32_t lv_needle_floor(lv_value_precise_t value);
+static int32_t lv_needle_ceil(lv_value_precise_t value);
+static int32_t lv_needle_floor_to_multiple(int32_t value, int32_t multiple);
+static void lv_needle_get_parent_origin(const lv_obj_t * obj, int32_t * x, int32_t * y);
 
 /**********************
  *  STATIC VARIABLES
  **********************/
 
-// SCRIPT INSERT START
 #if LV_USE_OBJ_PROPERTY
-static const lv_property_ops_t properties[] = {
+static const lv_property_ops_t lv_needle_properties[] = {
     {
         .id = LV_PROPERTY_NEEDLE_BACK_LENGTH,
         .setter = lv_needle_set_back_length,
@@ -67,6 +74,16 @@ static const lv_property_ops_t properties[] = {
         .id = LV_PROPERTY_NEEDLE_LENGTH,
         .setter = lv_needle_set_length,
         .getter = lv_needle_get_length,
+    },
+    {
+        .id = LV_PROPERTY_NEEDLE_MAX_VALUE,
+        .setter = lv_needle_set_max_value,
+        .getter = lv_needle_get_max_value,
+    },
+    {
+        .id = LV_PROPERTY_NEEDLE_MIN_VALUE,
+        .setter = lv_needle_set_min_value,
+        .getter = lv_needle_get_min_value,
     },
     {
         .id = LV_PROPERTY_NEEDLE_PIVOT_X,
@@ -110,7 +127,6 @@ static const lv_property_ops_t properties[] = {
     },
 };
 #endif
-// SCRIPT INSERT END
 const lv_obj_class_t lv_needle_class = {
     .constructor_cb = lv_needle_constructor,
     .destructor_cb = lv_needle_destructor,
@@ -120,18 +136,7 @@ const lv_obj_class_t lv_needle_class = {
     .instance_size = sizeof(lv_needle_t),
     .base_class = &lv_obj_class,
     .name = "needle",
-// SCRIPT INSERT START
-#if LV_USE_OBJ_PROPERTY
-    .prop_index_start = LV_PROPERTY_NEEDLE_START,
-    .prop_index_end = LV_PROPERTY_NEEDLE_END,
-    .properties = properties,
-    .properties_count = sizeof(properties) / sizeof(properties[0]),
-#if LV_USE_OBJ_PROPERTY_NAME
-    .property_names = lv_needle_property_names,
-    .names_count = sizeof(lv_needle_property_names) / sizeof(lv_property_name_t),
-#endif
-#endif
-// SCRIPT INSERT END
+    LV_PROPERTY_CLASS_FIELDS(needle, NEEDLE)
 };
 
 /**********************
@@ -147,7 +152,7 @@ lv_obj_t * lv_needle_create(lv_obj_t * parent)
     LV_LOG_INFO("begin");
     lv_obj_t * obj = lv_obj_class_create_obj(&lv_needle_class, parent);
     lv_obj_class_init_obj(obj);
-    lv_obj_set_size(obj, lv_obj_get_width(parent), lv_obj_get_height(parent));
+    lv_needle_refresh_geometry(obj);
 
     return obj;
 }
@@ -197,14 +202,14 @@ void lv_needle_set_line_width(lv_obj_t * obj, lv_value_precise_t width)
 {
     LV_ASSERT_OBJ(obj, MY_CLASS);
     lv_obj_set_style_line_width(obj, width, 0);
-    lv_obj_invalidate(obj);
+    lv_needle_refresh_geometry(obj);
 }
 
 void lv_needle_set_color(lv_obj_t * obj, lv_color_t color)
 {
     LV_ASSERT_OBJ(obj, MY_CLASS);
     lv_obj_set_style_line_color(obj, color, 0);
-    lv_obj_invalidate(obj);
+    lv_needle_refresh_value(obj);
 }
 
 void lv_needle_set_start_angle(lv_obj_t * obj, lv_value_precise_t angle)
@@ -223,12 +228,28 @@ void lv_needle_set_end_angle(lv_obj_t * obj, lv_value_precise_t angle)
     lv_needle_refresh_geometry(obj);
 }
 
+void lv_needle_set_min_value(lv_obj_t * obj, lv_value_precise_t min_value)
+{
+    LV_ASSERT_OBJ(obj, MY_CLASS);
+    lv_needle_t * needle = (lv_needle_t *)obj;
+    needle->min_value = min_value;
+    lv_needle_refresh_value(obj);
+}
+
+void lv_needle_set_max_value(lv_obj_t * obj, lv_value_precise_t max_value)
+{
+    LV_ASSERT_OBJ(obj, MY_CLASS);
+    lv_needle_t * needle = (lv_needle_t *)obj;
+    needle->max_value = max_value;
+    lv_needle_refresh_value(obj);
+}
+
 void lv_needle_set_value(lv_obj_t * obj, lv_value_precise_t value)
 {
     LV_ASSERT_OBJ(obj, MY_CLASS);
     lv_needle_t * needle = (lv_needle_t *)obj;
     needle->value = value;
-    lv_needle_refresh_geometry(obj);
+    lv_needle_refresh_value(obj);
 }
 
 void lv_needle_set_start_x(lv_obj_t * obj, lv_value_precise_t x) { lv_needle_set_pivot_x(obj, x); }
@@ -264,15 +285,13 @@ void lv_needle_set_segment(lv_obj_t * obj, bool segment)
 void lv_needle_set_width(lv_obj_t * obj, lv_value_precise_t width)
 {
     LV_ASSERT_OBJ(obj, MY_CLASS);
-    lv_needle_t * needle = (lv_needle_t *)obj;
     lv_obj_set_style_line_width(obj, width, 0);
-    lv_obj_invalidate(obj);
+    lv_needle_refresh_geometry(obj);
 }
 
 lv_value_precise_t lv_needle_get_width(lv_obj_t * obj)
 {
     LV_ASSERT_OBJ(obj, MY_CLASS);
-    lv_needle_t * needle = (lv_needle_t *)obj;
     return lv_obj_get_style_line_width(obj, 0);
 }
 
@@ -307,8 +326,7 @@ lv_value_precise_t lv_needle_get_back_length(lv_obj_t * obj)
 lv_value_precise_t lv_needle_get_line_width(lv_obj_t * obj)
 {
     LV_ASSERT_OBJ(obj, MY_CLASS);
-    lv_needle_t * needle = (lv_needle_t *)obj;
-    return 0;
+    return lv_obj_get_style_line_width(obj, 0);
 }
 
 lv_value_precise_t lv_needle_get_start_angle(lv_obj_t * obj)
@@ -330,6 +348,26 @@ lv_value_precise_t lv_needle_get_value(lv_obj_t * obj)
     LV_ASSERT_OBJ(obj, MY_CLASS);
     lv_needle_t * needle = (lv_needle_t *)obj;
     return needle->value;
+}
+
+lv_value_precise_t lv_needle_get_min_value(lv_obj_t * obj)
+{
+    LV_ASSERT_OBJ(obj, MY_CLASS);
+    lv_needle_t * needle = (lv_needle_t *)obj;
+    return needle->min_value;
+}
+
+lv_value_precise_t lv_needle_get_max_value(lv_obj_t * obj)
+{
+    LV_ASSERT_OBJ(obj, MY_CLASS);
+    lv_needle_t * needle = (lv_needle_t *)obj;
+    return needle->max_value;
+}
+
+lv_color_t lv_needle_get_color(lv_obj_t * obj)
+{
+    LV_ASSERT_OBJ(obj, MY_CLASS);
+    return lv_obj_get_style_line_color(obj, LV_PART_MAIN);
 }
 
 lv_value_precise_t lv_needle_get_start_x(lv_obj_t * obj)
@@ -360,7 +398,7 @@ lv_value_precise_t lv_needle_get_end_y(lv_obj_t * obj)
     return needle->end_y;
 }
 
-lv_value_precise_t lv_needle_get_segment(lv_obj_t * obj)
+bool lv_needle_get_segment(lv_obj_t * obj)
 {
     LV_ASSERT_OBJ(obj, MY_CLASS);
     lv_needle_t * needle = (lv_needle_t *)obj;
@@ -379,11 +417,14 @@ static void lv_needle_constructor(const lv_obj_class_t * class_p, lv_obj_t * obj
     lv_needle_t * needle = (lv_needle_t *)obj;
     needle->pivot_x = 0;
     needle->pivot_y = 0;
+    needle->min_value = 0;
+    needle->max_value = 100;
     needle->start_angle = 0;
     needle->end_angle = 360;
     needle->value = 0;
     needle->length = 100;
     needle->back_length = 0;
+    needle->cached_area_valid = false;
 
     lv_obj_remove_flag(obj, LV_OBJ_FLAG_CLICKABLE);
 
@@ -406,7 +447,7 @@ static void lv_needle_get_points(const lv_needle_t * needle, lv_point_precise_t 
         return;
     }
 
-    int32_t angle = lv_map(needle->value, 0, 100, (int32_t)needle->start_angle, (int32_t)needle->end_angle);
+    int32_t angle = (int32_t)lv_needle_map_value_to_angle(needle);
     float sin_val = lv_trigo_sin(angle) / 32768.0f;
     float cos_val = lv_trigo_cos(angle) / 32768.0f;
 
@@ -423,10 +464,200 @@ static void lv_needle_get_points(const lv_needle_t * needle, lv_point_precise_t 
     }
 }
 
+static void lv_needle_get_current_area(const lv_obj_t * obj, const lv_needle_t * needle, lv_area_t * area)
+{
+    lv_point_precise_t p1;
+    lv_point_precise_t p2;
+    int32_t parent_x;
+    int32_t parent_y;
+    lv_needle_get_points(needle, &p1, &p2);
+    lv_needle_get_parent_origin(obj, &parent_x, &parent_y);
+
+    int32_t x1 = parent_x + lv_needle_floor(LV_MIN(p1.x, p2.x));
+    int32_t y1 = parent_y + lv_needle_floor(LV_MIN(p1.y, p2.y));
+    int32_t x2 = parent_x + lv_needle_ceil(LV_MAX(p1.x, p2.x));
+    int32_t y2 = parent_y + lv_needle_ceil(LV_MAX(p1.y, p2.y));
+
+    lv_area_set(area, x1, y1, x2, y2);
+
+    int32_t line_width = lv_obj_get_style_line_width((lv_obj_t *)obj, LV_PART_MAIN);
+    int32_t pad = LV_MAX((line_width + 1) / 2, 1);
+    lv_area_increase(area, pad, pad);
+}
+
+static void lv_needle_get_geometry_area(const lv_obj_t * obj, const lv_needle_t * needle, lv_area_t * area)
+{
+    lv_value_precise_t min_x = needle->pivot_x;
+    lv_value_precise_t max_x = needle->pivot_x;
+    lv_value_precise_t min_y = needle->pivot_y;
+    lv_value_precise_t max_y = needle->pivot_y;
+
+    if(needle->is_segment) {
+        min_x = LV_MIN(min_x, needle->end_x);
+        max_x = LV_MAX(max_x, needle->end_x);
+        min_y = LV_MIN(min_y, needle->end_y);
+        max_y = LV_MAX(max_y, needle->end_y);
+    }
+    else {
+        lv_value_precise_t min_angle = LV_MIN(needle->start_angle, needle->end_angle);
+        lv_value_precise_t max_angle = LV_MAX(needle->start_angle, needle->end_angle);
+        int32_t min_angle_i = lv_needle_floor(min_angle);
+        int32_t max_angle_i = lv_needle_ceil(max_angle);
+        int32_t angle = lv_needle_floor_to_multiple(min_angle_i, 90);
+
+        for(; angle <= max_angle_i; angle += 90) {
+            float sin_val = lv_trigo_sin(angle) / 32768.0f;
+            float cos_val = lv_trigo_cos(angle) / 32768.0f;
+
+            lv_value_precise_t front_x = needle->pivot_x + needle->length * cos_val;
+            lv_value_precise_t front_y = needle->pivot_y + needle->length * sin_val;
+            lv_value_precise_t back_x = needle->pivot_x;
+            lv_value_precise_t back_y = needle->pivot_y;
+
+            if(needle->back_length != 0) {
+                back_x = needle->pivot_x - needle->back_length * cos_val;
+                back_y = needle->pivot_y - needle->back_length * sin_val;
+            }
+
+            min_x = LV_MIN(min_x, LV_MIN(front_x, back_x));
+            max_x = LV_MAX(max_x, LV_MAX(front_x, back_x));
+            min_y = LV_MIN(min_y, LV_MIN(front_y, back_y));
+            max_y = LV_MAX(max_y, LV_MAX(front_y, back_y));
+        }
+
+        {
+            lv_value_precise_t endpoint_angles[2] = { needle->start_angle, needle->end_angle };
+            uint32_t i;
+            for(i = 0; i < 2; i++) {
+                float sin_val = lv_trigo_sin((int32_t)endpoint_angles[i]) / 32768.0f;
+                float cos_val = lv_trigo_cos((int32_t)endpoint_angles[i]) / 32768.0f;
+
+                lv_value_precise_t front_x = needle->pivot_x + needle->length * cos_val;
+                lv_value_precise_t front_y = needle->pivot_y + needle->length * sin_val;
+                lv_value_precise_t back_x = needle->pivot_x;
+                lv_value_precise_t back_y = needle->pivot_y;
+
+                if(needle->back_length != 0) {
+                    back_x = needle->pivot_x - needle->back_length * cos_val;
+                    back_y = needle->pivot_y - needle->back_length * sin_val;
+                }
+
+                min_x = LV_MIN(min_x, LV_MIN(front_x, back_x));
+                max_x = LV_MAX(max_x, LV_MAX(front_x, back_x));
+                min_y = LV_MIN(min_y, LV_MIN(front_y, back_y));
+                max_y = LV_MAX(max_y, LV_MAX(front_y, back_y));
+            }
+        }
+    }
+
+    lv_area_set(area,
+                lv_needle_floor(min_x),
+                lv_needle_floor(min_y),
+                lv_needle_ceil(max_x),
+                lv_needle_ceil(max_y));
+
+    {
+        int32_t line_width = lv_obj_get_style_line_width((lv_obj_t *)obj, LV_PART_MAIN);
+        int32_t pad = LV_MAX((line_width + 1) / 2, 1);
+        lv_area_increase(area, pad, pad);
+    }
+}
+
+static void lv_needle_invalidate_area(lv_obj_t * obj, const lv_area_t * area)
+{
+    if(area == NULL) {
+        return;
+    }
+
+    lv_obj_invalidate_area(obj, area);
+}
+
+static void lv_needle_refresh_value(lv_obj_t * obj)
+{
+    lv_needle_t * needle = (lv_needle_t *)obj;
+    lv_area_t invalidate_area;
+    lv_area_t new_area;
+
+    lv_needle_get_current_area(obj, needle, &new_area);
+
+    if(needle->cached_area_valid) {
+        lv_area_join(&invalidate_area, &needle->cached_area, &new_area);
+        lv_needle_invalidate_area(obj, &invalidate_area);
+    }
+    else {
+        lv_needle_invalidate_area(obj, &new_area);
+    }
+
+    needle->cached_area = new_area;
+    needle->cached_area_valid = true;
+}
+
 static void lv_needle_refresh_geometry(lv_obj_t * obj)
 {
-    lv_obj_refresh_self_size(obj);
-    lv_obj_invalidate(obj);
+    lv_needle_t * needle = (lv_needle_t *)obj;
+    lv_area_t geometry_area;
+
+    lv_needle_get_geometry_area(obj, needle, &geometry_area);
+    lv_obj_set_pos(obj, geometry_area.x1, geometry_area.y1);
+    lv_obj_set_size(obj, lv_area_get_width(&geometry_area), lv_area_get_height(&geometry_area));
+
+    lv_needle_refresh_value(obj);
+}
+
+static lv_value_precise_t lv_needle_map_value_to_angle(const lv_needle_t * needle)
+{
+    lv_value_precise_t span = needle->max_value - needle->min_value;
+    if(span == 0) {
+        return needle->start_angle;
+    }
+
+    return needle->start_angle +
+           ((needle->value - needle->min_value) * (needle->end_angle - needle->start_angle)) / span;
+}
+
+static int32_t lv_needle_floor(lv_value_precise_t value)
+{
+    int32_t truncated = (int32_t)value;
+    if(value < (lv_value_precise_t)truncated) {
+        truncated--;
+    }
+
+    return truncated;
+}
+
+static int32_t lv_needle_ceil(lv_value_precise_t value)
+{
+    int32_t truncated = (int32_t)value;
+    if(value > (lv_value_precise_t)truncated) {
+        truncated++;
+    }
+
+    return truncated;
+}
+
+static int32_t lv_needle_floor_to_multiple(int32_t value, int32_t multiple)
+{
+    int32_t remainder = value % multiple;
+    if(remainder < 0) {
+        remainder += multiple;
+    }
+
+    return value - remainder;
+}
+
+static void lv_needle_get_parent_origin(const lv_obj_t * obj, int32_t * x, int32_t * y)
+{
+    lv_obj_t * parent = lv_obj_get_parent((lv_obj_t *)obj);
+    if(parent == NULL) {
+        *x = 0;
+        *y = 0;
+        return;
+    }
+
+    lv_area_t parent_coords;
+    lv_obj_get_coords(parent, &parent_coords);
+    *x = parent_coords.x1;
+    *y = parent_coords.y1;
 }
 
 static void lv_needle_event(const lv_obj_class_t * class_p, lv_event_t * e)
@@ -462,11 +693,20 @@ static void lv_needle_event(const lv_obj_class_t * class_p, lv_event_t * e)
     }
     else if(code == LV_EVENT_DRAW_MAIN) {
         lv_layer_t * layer = lv_event_get_layer(e);
+        int32_t parent_x;
+        int32_t parent_y;
+        lv_point_precise_t p1;
+        lv_point_precise_t p2;
+        lv_needle_get_points(needle, &p1, &p2);
+        lv_needle_get_parent_origin(obj, &parent_x, &parent_y);
 
         lv_draw_line_dsc_t line_dsc;
         lv_draw_line_dsc_init(&line_dsc);
         lv_obj_init_draw_line_dsc(obj, LV_PART_MAIN, &line_dsc);
-        lv_needle_get_points(needle, &line_dsc.p1, &line_dsc.p2);
+        line_dsc.p1.x = parent_x + p1.x;
+        line_dsc.p1.y = parent_y + p1.y;
+        line_dsc.p2.x = parent_x + p2.x;
+        line_dsc.p2.y = parent_y + p2.y;
 
         lv_draw_line(layer, &line_dsc);
     }

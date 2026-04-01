@@ -28,14 +28,16 @@ enum _lv_property_needle_id_t {
     LV_PROPERTY_ID(NEEDLE, END_X,       LV_PROPERTY_TYPE_PRECISE, 2),
     LV_PROPERTY_ID(NEEDLE, END_Y,       LV_PROPERTY_TYPE_PRECISE, 3),
     LV_PROPERTY_ID(NEEDLE, LENGTH,      LV_PROPERTY_TYPE_PRECISE, 4),
-    LV_PROPERTY_ID(NEEDLE, PIVOT_X,     LV_PROPERTY_TYPE_PRECISE, 5),
-    LV_PROPERTY_ID(NEEDLE, PIVOT_Y,     LV_PROPERTY_TYPE_PRECISE, 6),
-    LV_PROPERTY_ID(NEEDLE, SEGMENT,     LV_PROPERTY_TYPE_PRECISE, 7),
-    LV_PROPERTY_ID(NEEDLE, START_ANGLE, LV_PROPERTY_TYPE_PRECISE, 8),
-    LV_PROPERTY_ID(NEEDLE, START_X,     LV_PROPERTY_TYPE_PRECISE, 9),
-    LV_PROPERTY_ID(NEEDLE, START_Y,     LV_PROPERTY_TYPE_PRECISE, 10),
-    LV_PROPERTY_ID(NEEDLE, VALUE,       LV_PROPERTY_TYPE_PRECISE, 11),
-    LV_PROPERTY_ID(NEEDLE, WIDTH,       LV_PROPERTY_TYPE_PRECISE, 12),
+    LV_PROPERTY_ID(NEEDLE, MAX_VALUE,   LV_PROPERTY_TYPE_PRECISE, 5),
+    LV_PROPERTY_ID(NEEDLE, MIN_VALUE,   LV_PROPERTY_TYPE_PRECISE, 6),
+    LV_PROPERTY_ID(NEEDLE, PIVOT_X,     LV_PROPERTY_TYPE_PRECISE, 7),
+    LV_PROPERTY_ID(NEEDLE, PIVOT_Y,     LV_PROPERTY_TYPE_PRECISE, 8),
+    LV_PROPERTY_ID(NEEDLE, SEGMENT,     LV_PROPERTY_TYPE_BOOL,    9),
+    LV_PROPERTY_ID(NEEDLE, START_ANGLE, LV_PROPERTY_TYPE_PRECISE, 10),
+    LV_PROPERTY_ID(NEEDLE, START_X,     LV_PROPERTY_TYPE_PRECISE, 11),
+    LV_PROPERTY_ID(NEEDLE, START_Y,     LV_PROPERTY_TYPE_PRECISE, 12),
+    LV_PROPERTY_ID(NEEDLE, VALUE,       LV_PROPERTY_TYPE_PRECISE, 13),
+    LV_PROPERTY_ID(NEEDLE, WIDTH,       LV_PROPERTY_TYPE_PRECISE, 14),
     LV_PROPERTY_NEEDLE_END,
 };
 #endif
@@ -109,6 +111,20 @@ void lv_needle_set_end_angle(lv_obj_t * obj, lv_value_precise_t angle);
  * @param value     value of the needle
  */
 void lv_needle_set_value(lv_obj_t * obj, lv_value_precise_t value);
+
+/**
+ * Set the minimum logical value used to map `value` to `start_angle`.
+ * @param obj       pointer to a needle object.
+ * @param min_value minimum logical value.
+ */
+void lv_needle_set_min_value(lv_obj_t * obj, lv_value_precise_t min_value);
+
+/**
+ * Set the maximum logical value used to map `value` to `end_angle`.
+ * @param obj       pointer to a needle object.
+ * @param max_value maximum logical value.
+ */
+void lv_needle_set_max_value(lv_obj_t * obj, lv_value_precise_t max_value);
 
 /**
  * Set the length of the needle
@@ -214,6 +230,20 @@ lv_value_precise_t lv_needle_get_end_angle(lv_obj_t * obj);
 lv_value_precise_t lv_needle_get_value(lv_obj_t * obj);
 
 /**
+ * Get the minimum logical value used for angle mapping.
+ * @param obj       pointer to a needle object.
+ * @return          minimum logical value.
+ */
+lv_value_precise_t lv_needle_get_min_value(lv_obj_t * obj);
+
+/**
+ * Get the maximum logical value used for angle mapping.
+ * @param obj       pointer to a needle object.
+ * @return          maximum logical value.
+ */
+lv_value_precise_t lv_needle_get_max_value(lv_obj_t * obj);
+
+/**
  * Get the length of the needle
  * @param obj       pointer to a needle object
  * @return          length of the needle
@@ -275,7 +305,7 @@ lv_value_precise_t lv_needle_get_end_y(lv_obj_t * obj);
  * @param obj       pointer to a needle object
  * @return          segment of the needle
  */
-lv_value_precise_t lv_needle_get_segment(lv_obj_t * obj);
+bool lv_needle_get_segment(lv_obj_t * obj);
 
 /**********************
  *      MACROS

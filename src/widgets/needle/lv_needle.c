@@ -454,14 +454,9 @@ static void lv_needle_get_points(const lv_needle_t * needle, lv_point_precise_t 
     p1->x = needle->pivot_x + needle->length * cos_val;
     p1->y = needle->pivot_y + needle->length * sin_val;
 
-    if(needle->back_length != 0) {
-        p2->x = needle->pivot_x - needle->back_length * cos_val;
-        p2->y = needle->pivot_y - needle->back_length * sin_val;
-    }
-    else {
-        p2->x = needle->pivot_x;
-        p2->y = needle->pivot_y;
-    }
+    /* Negative back_length intentionally moves the rear endpoint in front of the pivot. */
+    p2->x = needle->pivot_x - needle->back_length * cos_val;
+    p2->y = needle->pivot_y - needle->back_length * sin_val;
 }
 
 static void lv_needle_get_current_area(const lv_obj_t * obj, const lv_needle_t * needle, lv_area_t * area)
@@ -511,13 +506,8 @@ static void lv_needle_get_geometry_area(const lv_obj_t * obj, const lv_needle_t 
 
             lv_value_precise_t front_x = needle->pivot_x + needle->length * cos_val;
             lv_value_precise_t front_y = needle->pivot_y + needle->length * sin_val;
-            lv_value_precise_t back_x = needle->pivot_x;
-            lv_value_precise_t back_y = needle->pivot_y;
-
-            if(needle->back_length != 0) {
-                back_x = needle->pivot_x - needle->back_length * cos_val;
-                back_y = needle->pivot_y - needle->back_length * sin_val;
-            }
+            lv_value_precise_t back_x = needle->pivot_x - needle->back_length * cos_val;
+            lv_value_precise_t back_y = needle->pivot_y - needle->back_length * sin_val;
 
             min_x = LV_MIN(min_x, LV_MIN(front_x, back_x));
             max_x = LV_MAX(max_x, LV_MAX(front_x, back_x));
@@ -534,13 +524,8 @@ static void lv_needle_get_geometry_area(const lv_obj_t * obj, const lv_needle_t 
 
                 lv_value_precise_t front_x = needle->pivot_x + needle->length * cos_val;
                 lv_value_precise_t front_y = needle->pivot_y + needle->length * sin_val;
-                lv_value_precise_t back_x = needle->pivot_x;
-                lv_value_precise_t back_y = needle->pivot_y;
-
-                if(needle->back_length != 0) {
-                    back_x = needle->pivot_x - needle->back_length * cos_val;
-                    back_y = needle->pivot_y - needle->back_length * sin_val;
-                }
+                lv_value_precise_t back_x = needle->pivot_x - needle->back_length * cos_val;
+                lv_value_precise_t back_y = needle->pivot_y - needle->back_length * sin_val;
 
                 min_x = LV_MIN(min_x, LV_MIN(front_x, back_x));
                 max_x = LV_MAX(max_x, LV_MAX(front_x, back_x));

@@ -138,6 +138,13 @@ void lv_needle_set_length(lv_obj_t * obj, lv_value_precise_t length);
  * @param obj       pointer to a needle object
  * @param length    length of the back part of the needle
  */
+/**
+ * Set the back length of the needle.
+ * @param obj       pointer to a needle object.
+ * @param length    length of the back part of the needle.
+ *                  Positive values extend behind the pivot.
+ *                  Negative values move the back endpoint in front of the pivot.
+ */
 void lv_needle_set_back_length(lv_obj_t * obj, lv_value_precise_t length);
 
 /**
@@ -254,6 +261,13 @@ lv_value_precise_t lv_needle_get_length(lv_obj_t * obj);
  * Get the back length of the needle
  * @param obj       pointer to a needle object
  * @return          length of the back part of the needle
+ */
+/**
+ * Get the back length of the needle.
+ * @param obj       pointer to a needle object.
+ * @return          length of the back part of the needle.
+ *                  Positive values extend behind the pivot.
+ *                  Negative values move the back endpoint in front of the pivot.
  */
 lv_value_precise_t lv_needle_get_back_length(lv_obj_t * obj);
 

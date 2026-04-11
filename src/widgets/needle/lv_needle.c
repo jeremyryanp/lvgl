@@ -491,7 +491,10 @@ static void lv_needle_refresh_value(lv_obj_t * obj)
     lv_needle_get_current_area(obj, needle, &new_area);
 
     if(needle->cached_area_valid) {
-        lv_area_join(&invalidate_area, &needle->cached_area, &new_area);
+        invalidate_area.x1 = LV_MIN(needle->cached_area.x1, new_area.x1);
+        invalidate_area.y1 = LV_MIN(needle->cached_area.y1, new_area.y1);
+        invalidate_area.x2 = LV_MAX(needle->cached_area.x2, new_area.x2);
+        invalidate_area.y2 = LV_MAX(needle->cached_area.y2, new_area.y2);
         lv_needle_invalidate_area(obj, &invalidate_area);
     }
     else {

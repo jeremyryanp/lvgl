@@ -20,27 +20,6 @@ extern "C" {
 /*********************
  *      DEFINES
  *********************/
-
-#if LV_USE_OBJ_PROPERTY
-enum _lv_property_needle_id_t {
-    LV_PROPERTY_ID(NEEDLE, BACK_LENGTH, LV_PROPERTY_TYPE_PRECISE, 0),
-    LV_PROPERTY_ID(NEEDLE, END_ANGLE,   LV_PROPERTY_TYPE_PRECISE, 1),
-    LV_PROPERTY_ID(NEEDLE, END_X,       LV_PROPERTY_TYPE_PRECISE, 2),
-    LV_PROPERTY_ID(NEEDLE, END_Y,       LV_PROPERTY_TYPE_PRECISE, 3),
-    LV_PROPERTY_ID(NEEDLE, LENGTH,      LV_PROPERTY_TYPE_PRECISE, 4),
-    LV_PROPERTY_ID(NEEDLE, MAX_VALUE,   LV_PROPERTY_TYPE_PRECISE, 5),
-    LV_PROPERTY_ID(NEEDLE, MIN_VALUE,   LV_PROPERTY_TYPE_PRECISE, 6),
-    LV_PROPERTY_ID(NEEDLE, PIVOT_X,     LV_PROPERTY_TYPE_PRECISE, 7),
-    LV_PROPERTY_ID(NEEDLE, PIVOT_Y,     LV_PROPERTY_TYPE_PRECISE, 8),
-    LV_PROPERTY_ID(NEEDLE, SEGMENT,     LV_PROPERTY_TYPE_BOOL,    9),
-    LV_PROPERTY_ID(NEEDLE, START_ANGLE, LV_PROPERTY_TYPE_PRECISE, 10),
-    LV_PROPERTY_ID(NEEDLE, START_X,     LV_PROPERTY_TYPE_PRECISE, 11),
-    LV_PROPERTY_ID(NEEDLE, START_Y,     LV_PROPERTY_TYPE_PRECISE, 12),
-    LV_PROPERTY_ID(NEEDLE, VALUE,       LV_PROPERTY_TYPE_PRECISE, 13),
-    LV_PROPERTY_ID(NEEDLE, WIDTH,       LV_PROPERTY_TYPE_PRECISE, 14),
-    LV_PROPERTY_NEEDLE_END,
-};
-#endif
 /**********************
  * GLOBAL PROTOTYPES
  **********************/
@@ -61,13 +40,6 @@ LV_ATTRIBUTE_EXTERN_DATA extern const lv_obj_class_t lv_needle_class;
 /*=====================
  * Setter functions
  *====================*/
-
-/**
- * Create a needle object
- * @param parent    pointer to an object, it will be the parent of the new needle
- * @return          pointer to the created needle
- */
-lv_obj_t * lv_needle_create(lv_obj_t * parent);
 
 /**
  * Set the pivot point of the needle
@@ -156,37 +128,39 @@ void lv_needle_set_width(lv_obj_t * obj, lv_value_precise_t width);
 void lv_needle_set_color(lv_obj_t * obj, lv_color_t color);
 
 /**
- * Set the end x coordinate of the needle
+ * Set the x coordinate of the pivot point.
+ * @param obj       pointer to a needle object
+ * @param x         x coordinate of the pivot point
+ */
+void lv_needle_set_start_x(lv_obj_t * obj, lv_value_precise_t x);
+
+/**
+ * Set the y coordinate of the pivot point.
+ * @param obj       pointer to a needle object
+ * @param y         y coordinate of the pivot point
+ */
+void lv_needle_set_start_y(lv_obj_t * obj, lv_value_precise_t y);
+
+/**
+ * Set the x coordinate of the segment endpoint.
+ * The widget must be in segment mode for this to affect drawing.
  * @param obj       pointer to a needle object
  * @param x         x coordinate of the end point
  */
-void lv_needle_set_start_x(lv_obj_t * obj, lv_value_precise_t x); 
+void lv_needle_set_end_x(lv_obj_t * obj, lv_value_precise_t x);
 
 /**
- * Set the end y coordinate of the needle
+ * Set the y coordinate of the segment endpoint.
+ * The widget must be in segment mode for this to affect drawing.
  * @param obj       pointer to a needle object
  * @param y         y coordinate of the end point
  */
-void lv_needle_set_start_y(lv_obj_t * obj, lv_value_precise_t y);     
+void lv_needle_set_end_y(lv_obj_t * obj, lv_value_precise_t y);
 
 /**
- * Set the end x coordinate of the needle
+ * Enable or disable explicit segment mode.
  * @param obj       pointer to a needle object
- * @param x         x coordinate of the end point
- */
-void lv_needle_set_end_x(lv_obj_t * obj, lv_value_precise_t x); 
-
-/**
- * Set the end y coordinate of the needle
- * @param obj       pointer to a needle object
- * @param y         y coordinate of the end point
- */
-void lv_needle_set_end_y(lv_obj_t * obj, lv_value_precise_t y);     
-
-/**
- * Set the segment of the needle
- * @param obj       pointer to a needle object
- * @param segment   segment of the needle
+ * @param segment   true to draw from pivot to `end_x`/`end_y`, false to use angle/value mapping
  */
 void lv_needle_set_segment(lv_obj_t * obj, bool segment);
 
@@ -275,14 +249,14 @@ lv_color_t lv_needle_get_color(lv_obj_t * obj);
 /**
  * Get the start x coordinate of the needle
  * @param obj       pointer to a needle object
- * @return          x coordinate of the start point
+ * @return          x coordinate of the pivot point
  */
 lv_value_precise_t lv_needle_get_start_x(lv_obj_t * obj);
 
 /**
  * Get the start y coordinate of the needle
  * @param obj       pointer to a needle object
- * @return          y coordinate of the start point
+ * @return          y coordinate of the pivot point
  */
 lv_value_precise_t lv_needle_get_start_y(lv_obj_t * obj);
 
@@ -298,7 +272,7 @@ lv_value_precise_t lv_needle_get_end_x(lv_obj_t * obj);
  * @param obj       pointer to a needle object
  * @return          y coordinate of the end point
  */
-lv_value_precise_t lv_needle_get_end_y(lv_obj_t * obj); 
+lv_value_precise_t lv_needle_get_end_y(lv_obj_t * obj);
 
 /**
  * Get the segment of the needle

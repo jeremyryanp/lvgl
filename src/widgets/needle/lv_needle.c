@@ -13,7 +13,6 @@
 #include "../../draw/lv_draw.h"
 #include "../../misc/lv_assert.h"
 #include "../../misc/lv_area.h"
-#include "../../misc/lv_area_private.h"
 #include "../../misc/lv_math.h"
 #include "../../misc/lv_types.h"
 
@@ -48,85 +47,6 @@ static void lv_needle_get_parent_origin(const lv_obj_t * obj, int32_t * x, int32
  *  STATIC VARIABLES
  **********************/
 
-#if LV_USE_OBJ_PROPERTY
-static const lv_property_ops_t lv_needle_properties[] = {
-    {
-        .id = LV_PROPERTY_NEEDLE_BACK_LENGTH,
-        .setter = lv_needle_set_back_length,
-        .getter = lv_needle_get_back_length,
-    },
-    {
-        .id = LV_PROPERTY_NEEDLE_END_ANGLE,
-        .setter = lv_needle_set_end_angle,
-        .getter = lv_needle_get_end_angle,
-    },
-    {
-        .id = LV_PROPERTY_NEEDLE_END_X,
-        .setter = lv_needle_set_end_x,
-        .getter = lv_needle_get_end_x,
-    },
-    {
-        .id = LV_PROPERTY_NEEDLE_END_Y,
-        .setter = lv_needle_set_end_y,
-        .getter = lv_needle_get_end_y,
-    },
-    {
-        .id = LV_PROPERTY_NEEDLE_LENGTH,
-        .setter = lv_needle_set_length,
-        .getter = lv_needle_get_length,
-    },
-    {
-        .id = LV_PROPERTY_NEEDLE_MAX_VALUE,
-        .setter = lv_needle_set_max_value,
-        .getter = lv_needle_get_max_value,
-    },
-    {
-        .id = LV_PROPERTY_NEEDLE_MIN_VALUE,
-        .setter = lv_needle_set_min_value,
-        .getter = lv_needle_get_min_value,
-    },
-    {
-        .id = LV_PROPERTY_NEEDLE_PIVOT_X,
-        .setter = lv_needle_set_pivot_x,
-        .getter = lv_needle_get_pivot_x,
-    },
-    {
-        .id = LV_PROPERTY_NEEDLE_PIVOT_Y,
-        .setter = lv_needle_set_pivot_y,
-        .getter = lv_needle_get_pivot_y,
-    },
-    {
-        .id = LV_PROPERTY_NEEDLE_SEGMENT,
-        .setter = lv_needle_set_segment,
-        .getter = lv_needle_get_segment,
-    },
-    {
-        .id = LV_PROPERTY_NEEDLE_START_ANGLE,
-        .setter = lv_needle_set_start_angle,
-        .getter = lv_needle_get_start_angle,
-    },
-    {
-        .id = LV_PROPERTY_NEEDLE_START_X,
-        .setter = lv_needle_set_start_x,
-        .getter = lv_needle_get_start_x,
-    },
-    {
-        .id = LV_PROPERTY_NEEDLE_START_Y,
-        .setter = lv_needle_set_start_y,
-        .getter = lv_needle_get_start_y,
-    },
-    {
-        .id = LV_PROPERTY_NEEDLE_VALUE,
-        .setter = lv_needle_set_value,
-        .getter = lv_needle_get_value,
-    },
-    {
-        .id = LV_PROPERTY_NEEDLE_WIDTH,
-        .setter = lv_needle_set_width,
-        .getter = lv_needle_get_width,
-    },
-};
-#endif
 const lv_obj_class_t lv_needle_class = {
     .constructor_cb = lv_needle_constructor,
     .destructor_cb = lv_needle_destructor,
@@ -136,7 +56,6 @@ const lv_obj_class_t lv_needle_class = {
     .instance_size = sizeof(lv_needle_t),
     .base_class = &lv_obj_class,
     .name = "needle",
-    LV_PROPERTY_CLASS_FIELDS(needle, NEEDLE)
 };
 
 /**********************
@@ -195,13 +114,6 @@ void lv_needle_set_back_length(lv_obj_t * obj, lv_value_precise_t length)
     LV_ASSERT_OBJ(obj, MY_CLASS);
     lv_needle_t * needle = (lv_needle_t *)obj;
     needle->back_length = length;
-    lv_needle_refresh_geometry(obj);
-}
-
-void lv_needle_set_line_width(lv_obj_t * obj, lv_value_precise_t width)
-{
-    LV_ASSERT_OBJ(obj, MY_CLASS);
-    lv_obj_set_style_line_width(obj, width, 0);
     lv_needle_refresh_geometry(obj);
 }
 
@@ -323,12 +235,6 @@ lv_value_precise_t lv_needle_get_back_length(lv_obj_t * obj)
     return needle->back_length;
 }
 
-lv_value_precise_t lv_needle_get_line_width(lv_obj_t * obj)
-{
-    LV_ASSERT_OBJ(obj, MY_CLASS);
-    return lv_obj_get_style_line_width(obj, 0);
-}
-
 lv_value_precise_t lv_needle_get_start_angle(lv_obj_t * obj)
 {
     LV_ASSERT_OBJ(obj, MY_CLASS);
@@ -424,7 +330,11 @@ static void lv_needle_constructor(const lv_obj_class_t * class_p, lv_obj_t * obj
     needle->value = 0;
     needle->length = 100;
     needle->back_length = 0;
+    needle->is_segment = false;
+    needle->end_x = 0;
+    needle->end_y = 0;
     needle->cached_area_valid = false;
+    lv_area_set(&needle->cached_area, 0, 0, 0, 0);
 
     lv_obj_remove_flag(obj, LV_OBJ_FLAG_CLICKABLE);
 

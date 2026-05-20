@@ -13,7 +13,6 @@
 #include "../../draw/lv_draw.h"
 #include "../../misc/lv_assert.h"
 #include "../../misc/lv_area.h"
-#include "../../misc/lv_area_private.h"
 #include "../../misc/lv_math.h"
 #include "../../misc/lv_types.h"
 
@@ -21,6 +20,7 @@
  *      DEFINES
  *********************/
 #define MY_CLASS (&lv_needle_class)
+#define LV_NEEDLE_OVERINVALIDATE_PX 1
 /**********************
  *      TYPEDEFS
  **********************/
@@ -43,6 +43,7 @@ static int32_t lv_needle_floor(lv_value_precise_t value);
 static int32_t lv_needle_ceil(lv_value_precise_t value);
 static int32_t lv_needle_floor_to_multiple(int32_t value, int32_t multiple);
 static void lv_needle_get_parent_origin(const lv_obj_t * obj, int32_t * x, int32_t * y);
+static int32_t lv_needle_get_draw_pad(const lv_obj_t * obj);
 
 /**********************
  *  STATIC VARIABLES
@@ -424,6 +425,10 @@ static void lv_needle_constructor(const lv_obj_class_t * class_p, lv_obj_t * obj
     needle->value = 0;
     needle->length = 100;
     needle->back_length = 0;
+    needle->is_segment = false;
+    needle->end_x = 0;
+    needle->end_y = 0;
+    lv_area_set(&needle->cached_area, 0, 0, 0, 0);
     needle->cached_area_valid = false;
 
     lv_obj_remove_flag(obj, LV_OBJ_FLAG_CLICKABLE);
@@ -475,8 +480,7 @@ static void lv_needle_get_current_area(const lv_obj_t * obj, const lv_needle_t *
 
     lv_area_set(area, x1, y1, x2, y2);
 
-    int32_t line_width = lv_obj_get_style_line_width((lv_obj_t *)obj, LV_PART_MAIN);
-    int32_t pad = LV_MAX((line_width + 1) / 2, 1);
+    int32_t pad = lv_needle_get_draw_pad(obj);
     lv_area_increase(area, pad, pad);
 }
 
@@ -542,8 +546,7 @@ static void lv_needle_get_geometry_area(const lv_obj_t * obj, const lv_needle_t 
                 lv_needle_ceil(max_y));
 
     {
-        int32_t line_width = lv_obj_get_style_line_width((lv_obj_t *)obj, LV_PART_MAIN);
-        int32_t pad = LV_MAX((line_width + 1) / 2, 1);
+        int32_t pad = lv_needle_get_draw_pad(obj);
         lv_area_increase(area, pad, pad);
     }
 }
@@ -566,7 +569,10 @@ static void lv_needle_refresh_value(lv_obj_t * obj)
     lv_needle_get_current_area(obj, needle, &new_area);
 
     if(needle->cached_area_valid) {
-        lv_area_join(&invalidate_area, &needle->cached_area, &new_area);
+        invalidate_area.x1 = LV_MIN(needle->cached_area.x1, new_area.x1);
+        invalidate_area.y1 = LV_MIN(needle->cached_area.y1, new_area.y1);
+        invalidate_area.x2 = LV_MAX(needle->cached_area.x2, new_area.x2);
+        invalidate_area.y2 = LV_MAX(needle->cached_area.y2, new_area.y2);
         lv_needle_invalidate_area(obj, &invalidate_area);
     }
     else {
@@ -630,6 +636,13 @@ static int32_t lv_needle_floor_to_multiple(int32_t value, int32_t multiple)
     return value - remainder;
 }
 
+static int32_t lv_needle_get_draw_pad(const lv_obj_t * obj)
+{
+    const int32_t line_width = lv_obj_get_style_line_width((lv_obj_t *)obj, LV_PART_MAIN);
+    /* Leave one extra pixel for AA/diagonal rasterization so moving needles don't clip at some angles. */
+    return LV_MAX((line_width + 1) / 2, 1) + LV_NEEDLE_OVERINVALIDATE_PX;
+}
+
 static void lv_needle_get_parent_origin(const lv_obj_t * obj, int32_t * x, int32_t * y)
 {
     lv_obj_t * parent = lv_obj_get_parent((lv_obj_t *)obj);
@@ -665,7 +678,8 @@ static void lv_needle_event(const lv_obj_class_t * class_p, lv_event_t * e)
         /*The corner of the skew lines is out of the intended area*/
         int32_t line_width = lv_obj_get_style_line_width(obj, LV_PART_MAIN);
         int32_t * s = lv_event_get_param(e);
-        if(*s < line_width) *s = line_width;
+        const int32_t ext_draw_size = line_width + LV_NEEDLE_OVERINVALIDATE_PX;
+        if(*s < ext_draw_size) *s = ext_draw_size;
     }
     else if(code == LV_EVENT_GET_SELF_SIZE) {
         lv_point_t * p = lv_event_get_self_size_info(e);

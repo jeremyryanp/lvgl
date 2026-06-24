@@ -49,6 +49,8 @@ typedef struct {
     int32_t end_index;
     int32_t current_frame_index;
     int32_t mode;
+    int32_t restart_on_src_switch;
+    int32_t something_changed;
     int32_t duration;
     uint32_t play_start_tick;
     lv_timer_t * timer;
@@ -162,7 +164,12 @@ void lv_frameseq_set_src(lv_obj_t * obj, const char * src)
     lv_frameseq_t * frameseq = (lv_frameseq_t *)obj;
 
     lv_frameseq_set_text(&frameseq->src, src);
-    frameseq->current_frame_index = -1;
+
+    if(frameseq->restart_on_src_switch)
+        frameseq->current_frame_index = -1;
+
+    frameseq->something_changed = 1;
+
     lv_frameseq_restart(obj);
 }
 
@@ -179,7 +186,10 @@ void lv_frameseq_set_format(lv_obj_t * obj, const char * format)
     lv_frameseq_t * frameseq = (lv_frameseq_t *)obj;
 
     lv_frameseq_set_text(&frameseq->format, format && format[0] ? format : "image");
-    frameseq->current_frame_index = -1;
+    
+    // if(frameseq->restart_on_src_switch)
+    // frameseq->current_frame_index = -1;
+
     if(!lv_frameseq_is_raw_format(frameseq->format) && frameseq->draw_buf) {
         lv_draw_buf_destroy(frameseq->draw_buf);
         frameseq->draw_buf = NULL;
@@ -202,7 +212,7 @@ void lv_frameseq_set_frame_width(lv_obj_t * obj, int32_t frame_width)
     if(frameseq->draw_buf && frameseq->draw_buf->header.w != (uint32_t)frameseq->frame_width) {
         lv_draw_buf_destroy(frameseq->draw_buf);
         frameseq->draw_buf = NULL;
-        frameseq->current_frame_index = -1;
+        // frameseq->current_frame_index = -1;
     }
     lv_frameseq_refresh(obj);
 }
@@ -222,7 +232,7 @@ void lv_frameseq_set_frame_height(lv_obj_t * obj, int32_t frame_height)
     if(frameseq->draw_buf && frameseq->draw_buf->header.h != (uint32_t)frameseq->frame_height) {
         lv_draw_buf_destroy(frameseq->draw_buf);
         frameseq->draw_buf = NULL;
-        frameseq->current_frame_index = -1;
+        // frameseq->current_frame_index = -1;
     }
     lv_frameseq_refresh(obj);
 }
@@ -287,7 +297,10 @@ void lv_frameseq_set_start_index(lv_obj_t * obj, int32_t start_index)
     LV_ASSERT_OBJ(obj, MY_CLASS);
     lv_frameseq_t * frameseq = (lv_frameseq_t *)obj;
     frameseq->start_index = LV_MAX(start_index, 0);
-    frameseq->current_frame_index = -1;
+    
+    if(frameseq->current_frame_index < start_index)
+        frameseq->current_frame_index = start_index;
+
     lv_frameseq_restart(obj);
 }
 
@@ -303,7 +316,10 @@ void lv_frameseq_set_end_index(lv_obj_t * obj, int32_t end_index)
     LV_ASSERT_OBJ(obj, MY_CLASS);
     lv_frameseq_t * frameseq = (lv_frameseq_t *)obj;
     frameseq->end_index = end_index;
-    frameseq->current_frame_index = -1;
+    
+    if(frameseq->current_frame_index >= end_index)
+        frameseq->current_frame_index = end_index - 1;
+
     lv_frameseq_restart(obj);
 }
 
@@ -436,9 +452,11 @@ static void lv_frameseq_render_frame(lv_obj_t * obj, int32_t frame_index)
     }
 
     frame_index = lv_frameseq_clamp_frame(frameseq, frame_index);
-    if(frame_index == frameseq->current_frame_index) {
+    if(frame_index == frameseq->current_frame_index && !frameseq->something_changed) {
         return;
     }
+    
+    frameseq->something_changed = 0;
 
     char path[LV_FRAMESEQ_PATH_MAX];
     lv_frameseq_format_path(frameseq, frame_index, path, sizeof(path));

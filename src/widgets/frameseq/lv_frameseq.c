@@ -165,8 +165,8 @@ void lv_frameseq_set_src(lv_obj_t * obj, const char * src)
 
     lv_frameseq_set_text(&frameseq->src, src);
 
-    if(frameseq->restart_on_src_switch)
-        frameseq->current_frame_index = -1;
+    // if(frameseq->restart_on_src_switch)
+    //     frameseq->current_frame_index = -1;
 
     frameseq->something_changed = 1;
 

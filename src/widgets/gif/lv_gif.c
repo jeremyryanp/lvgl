@@ -37,6 +37,7 @@ typedef struct {
     int32_t loop_count;
     uint32_t is_open : 1;
     uint32_t is_auto_pause : 1;
+    uint32_t is_auto_paused : 1; /*Paused by auto-pause (not the user); resumed on the next draw*/
     uint32_t cur_frame_index;
 } lv_gif_t;
 
@@ -50,6 +51,7 @@ static void gif_previous_close(lv_gif_t * gifobj);
 static void gif_initialize(lv_gif_t * gifobj);
 static void gif_disposal_last_frame(GIFIMAGE * gif, lv_draw_buf_t * draw_buf);
 static void gif_next_frame_task_cb(lv_timer_t * t);
+static void gif_draw_event_cb(lv_event_t * e);
 
 /**********************
  *  STATIC VARIABLES
@@ -134,6 +136,7 @@ void lv_gif_restart(lv_obj_t * obj)
 
     GIF_reset(&gifobj->gif);
     gifobj->loop_count = -1; /* match the behavior of the old library */
+    gifobj->is_auto_paused = 0;
     lv_timer_resume(gifobj->timer);
     lv_timer_reset(gifobj->timer);
 
@@ -145,6 +148,7 @@ void lv_gif_pause(lv_obj_t * obj)
     LV_ASSERT_OBJ(obj, MY_CLASS);
     lv_gif_t * gifobj = (lv_gif_t *) obj;
 
+    gifobj->is_auto_paused = 0;
     lv_timer_pause(gifobj->timer);
 }
 
@@ -158,6 +162,7 @@ void lv_gif_resume(lv_obj_t * obj)
         return;
     }
 
+    gifobj->is_auto_paused = 0;
     lv_timer_resume(gifobj->timer);
 }
 
@@ -200,6 +205,10 @@ void lv_gif_set_auto_pause_invisible(lv_obj_t * obj, bool auto_pause)
     lv_gif_t * gifobj = (lv_gif_t *) obj;
 
     gifobj->is_auto_pause = auto_pause;
+    if(!auto_pause && gifobj->is_auto_paused) {
+        gifobj->is_auto_paused = 0;
+        lv_timer_resume(gifobj->timer);
+    }
 }
 
 bool lv_gif_get_size(const char * src, uint16_t * w, uint16_t * h)
@@ -272,9 +281,22 @@ static void lv_gif_constructor(const lv_obj_class_t * class_p, lv_obj_t * obj)
     gifobj->color_format = LV_COLOR_FORMAT_ARGB8888;
     gifobj->is_open = 0;
     gifobj->is_auto_pause = 0;
+    gifobj->is_auto_paused = 0;
     gifobj->cur_frame_index = 0;
     gifobj->timer = lv_timer_create(gif_next_frame_task_cb, 10, obj);
     lv_timer_pause(gifobj->timer);
+    lv_obj_add_event_cb(obj, gif_draw_event_cb, LV_EVENT_DRAW_MAIN_BEGIN, NULL);
+}
+
+static void gif_draw_event_cb(lv_event_t * e)
+{
+    lv_gif_t * gifobj = (lv_gif_t *) lv_event_get_current_target(e);
+
+    /*Being drawn means visible again (e.g. its screen was loaded): resume an auto-paused GIF*/
+    if(gifobj->is_auto_paused) {
+        gifobj->is_auto_paused = 0;
+        lv_timer_resume(gifobj->timer);
+    }
 }
 
 static void lv_gif_destructor(const lv_obj_class_t * class_p, lv_obj_t * obj)
@@ -567,6 +589,7 @@ static void gif_initialize(lv_gif_t * gifobj)
 
     gifobj->loop_count = GIF_getLoopCount(&gifobj->gif);
 
+    gifobj->is_auto_paused = 0;
     lv_timer_resume(gifobj->timer);
     lv_timer_reset(gifobj->timer);
     gif_next_frame_task_cb(gifobj->timer);
@@ -674,6 +697,7 @@ static void gif_next_frame_task_cb(lv_timer_t * t)
 
     bool is_visible = lv_obj_is_visible(obj);
     if(gifobj->is_auto_pause && !is_visible) {
+        gifobj->is_auto_paused = 1;
         lv_timer_pause(t);
         LV_PROFILER_DECODER_END;
         return;

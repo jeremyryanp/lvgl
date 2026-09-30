@@ -404,6 +404,12 @@ static void lv_frameseq_timer_cb(lv_timer_t * timer)
         return;
     }
 
+    /*Don't load frames while off-screen (e.g. on a screen that isn't loaded). Playback is
+     *time based, so the first tick after becoming visible lands on the correct frame.*/
+    if(!lv_obj_is_visible(obj)) {
+        return;
+    }
+
     int32_t frame_span = end - start + 1;
     uint32_t elapsed = lv_tick_elaps(frameseq->play_start_tick);
     uint32_t position = elapsed % (uint32_t)frameseq->duration;
